@@ -1,17 +1,15 @@
 #include "commonFunc.h"
 #include "graphic.h"
 #include "character.h"
+#include "map.h"
 
 SDL_Window* g_window = NULL;
 SDL_Renderer* g_render = NULL;
 SDL_Event g_event;
 
-int TILE_SIZE = 32;
-int LEVEL_WIDTH = 8000;
-int LEVEL_HEIGHT =552;
-
 Graphic g_background; 
 Character g_character; 
+std::vector<std::vector<int> > map_data;
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
@@ -30,6 +28,7 @@ bool InitData() {
 bool LoadResources() {
     if (!g_background.LoadImg("background.png", g_render)) return false;
     if (!g_character.LoadImg("character.png", g_render)) return false;
+    LoadMapFromFile("map2.txt", map_data);
     return true;
 }
 
@@ -40,8 +39,8 @@ void UpdateCamera() {
 
     if (camera.x < 0) camera.x = 0;
     if (camera.y < 0) camera.y = 0;
-    if (camera.x + camera.w > LEVEL_WIDTH) camera.x = LEVEL_WIDTH - camera.w;
-    if (camera.y + camera.h > LEVEL_HEIGHT) camera.y = LEVEL_HEIGHT - camera.h;
+    if (camera.x + camera.w > map_width) camera.x = map_width - camera.w;
+    if (camera.y + camera.h > map_height) camera.y = map_height - camera.h;
 }
 
 void Close() {
@@ -75,7 +74,7 @@ int main(int argc, char* argv[]) {
             g_character.HandleInput(g_event);
         }
 
-        g_character.Move(delta_time);
+        g_character.Move(delta_time, map_data);
         UpdateCamera();
 
         SDL_SetRenderDrawColor(g_render, 0, 0, 0, 255);

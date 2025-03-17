@@ -21,8 +21,10 @@ const int COLOR_KEY_B = 180;
 
 const int RENDER_DRAW_COLOR = 255;
 
-extern int TILE_SIZE;
-extern int LEVEL_WIDTH;
-extern int LEVEL_HEIGHT;
+const int TILE_SIZE_WIDTH = 16;
+const int TILE_SIZE_HEIGHT = 24;
+
+extern int map_width ;
+extern int map_height ;
 
 #endif

@@ -1,5 +1,6 @@
 #include "commonFunc.h"
 #include "character.h"
+#include "map.h"
 
 Character::Character()
 {
@@ -53,28 +54,45 @@ void Character::HandleInput(SDL_Event& event)
     }
 }
 
-bool Character::CheckCollision(int x, int y)
+bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data)
 {
-    if (x < 0 || x + TILE_SIZE > LEVEL_WIDTH || y < 0 || y + TILE_SIZE > LEVEL_HEIGHT)
+    int left_tile = x / TILE_SIZE_WIDTH;
+    int right_tile = (x + TILE_SIZE_WIDTH - 1) / TILE_SIZE_WIDTH;
+    int top_tile = y / TILE_SIZE_HEIGHT;
+    int bottom_tile = (y + TILE_SIZE_HEIGHT - 1) / TILE_SIZE_HEIGHT;
+
+    for (int i = top_tile; i <= bottom_tile; ++i) {
+        for (int j = left_tile; j <= right_tile; ++j) 
+        {
+            if (map_data[i][j] != 0) 
+            {
+                return true;
+            }
+        }
+    }
+    if (x < 0 || x + TILE_SIZE_WIDTH > map_width || y < 0 || y + TILE_SIZE_HEIGHT > map_height)
     {
-        if (y + TILE_SIZE > LEVEL_HEIGHT)
+        if (y + TILE_SIZE_HEIGHT > map_height)
             on_ground_ = true;
         return true;
     }
+
     return false;
 }
 
-void Character::Move(double delta_time)
+
+
+void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data)
 {
     double new_pos_x = pos_x_ + vel_x_ * delta_time;
-    if (!CheckCollision((int)new_pos_x, (int)pos_y_))
+    if (!CheckCollision((int)new_pos_x, (int)pos_y_, map_data))
         pos_x_ = new_pos_x;
 
     vel_y_ += gravity_ * delta_time;
     if (vel_y_ > max_fall_) vel_y_ = max_fall_;
 
     double new_pos_y = pos_y_ + vel_y_ * delta_time;
-    if (!CheckCollision((int)pos_x_, (int)new_pos_y))
+    if (!CheckCollision((int)pos_x_, (int)new_pos_y, map_data))
     {
         pos_y_ = new_pos_y;
         on_ground_ = false;
@@ -96,8 +114,8 @@ void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
     SDL_Rect render_rect;
     render_rect.x = (int)pos_x_ - camera->x;
     render_rect.y = (int)pos_y_ - camera->y;
-    render_rect.w = TILE_SIZE;
-    render_rect.h = TILE_SIZE;
+    render_rect.w = TILE_SIZE_WIDTH;
+    render_rect.h = TILE_SIZE_HEIGHT;
 
     player_.SetRect(render_rect.x, render_rect.y);
     player_.Render(des, NULL);

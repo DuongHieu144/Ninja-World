@@ -2,6 +2,7 @@
 #define CHARACTER_H
 
 #include "graphic.h"
+#include "vector"
 
 class Character
 {
@@ -11,7 +12,7 @@ public:
 
     bool LoadImg(std::string path, SDL_Renderer* screen);
     void HandleInput(SDL_Event& event);
-    void Move(double delta_time);
+    void Move(double delta_time, std::vector<std::vector<int> >& map_data);
     void Render(SDL_Renderer* des, SDL_Rect* camera);
     SDL_Rect GetRect() const { return player_.GetRect(); }
 
@@ -24,7 +25,7 @@ private:
     double jump;
     const double SPEED = 200.0;
     bool on_ground_;
-    bool CheckCollision(int x, int y);
+    bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
 };
 
 #endif
