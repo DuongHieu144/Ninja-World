@@ -57,9 +57,9 @@ void Character::HandleInput(SDL_Event& event)
 bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data)
 {
     int left_tile = x / TILE_SIZE_WIDTH;
-    int right_tile = (x + TILE_SIZE_WIDTH - 1) / TILE_SIZE_WIDTH;
+    int right_tile = (x + w_player - 1) / TILE_SIZE_WIDTH;
     int top_tile = y / TILE_SIZE_HEIGHT;
-    int bottom_tile = (y + TILE_SIZE_HEIGHT - 1) / TILE_SIZE_HEIGHT;
+    int bottom_tile = (y + h_player - 1) / TILE_SIZE_HEIGHT;
 
     for (int i = top_tile; i <= bottom_tile; ++i) {
         for (int j = left_tile; j <= right_tile; ++j) 
@@ -70,9 +70,9 @@ bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map
             }
         }
     }
-    if (x < 0 || x + TILE_SIZE_WIDTH > map_width || y < 0 || y + TILE_SIZE_HEIGHT > map_height)
+    if (x < 0 || x + w_player > map_width || y < 0 || y + h_player > map_height)
     {
-        if (y + TILE_SIZE_HEIGHT > map_height)
+        if (y + h_player > map_height)
             on_ground_ = true;
         return true;
     }

@@ -25,6 +25,8 @@ private:
     double jump;
     const double SPEED = 200.0;
     bool on_ground_;
+    int h_player = 38;
+    int w_player = 21;
     bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
 };
 
