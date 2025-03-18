@@ -8,10 +8,12 @@ Character::Character()
     pos_y_ = 100;
     vel_x_ = 0;
     vel_y_ = 0;
-    gravity_ = 1000.0;
-    max_fall_ = 500.0;
-    jump = -450.0;
+    gravity_y = 1000.0;
+    gravity_x = 600.0;
+    jump = -350.0;
     on_ground_ = false;
+    flag_right_ = false;
+    flag_left_ = false;
     player_.SetRect((int)pos_x_, (int)pos_y_);
 }
 
@@ -25,35 +27,6 @@ bool Character::LoadImg(std::string path, SDL_Renderer* screen)
     return player_.LoadImg(path, screen);
 }
 
-void Character::HandleInput(SDL_Event& event)
-{
-    if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
-    {
-        switch (event.key.keysym.sym)
-        {
-            case SDLK_UP:
-                if (on_ground_)
-                {
-                    vel_y_ = jump;
-                    on_ground_ = false;
-                }
-                break;
-            case SDLK_LEFT: vel_x_ = -SPEED; break;
-            case SDLK_RIGHT: vel_x_ = SPEED; break;
-        }
-    }
-    else if (event.type == SDL_KEYUP)
-    {
-        switch (event.key.keysym.sym)
-        {
-            case SDLK_LEFT:
-            case SDLK_RIGHT:
-                vel_x_ = 0;
-                break;
-        }
-    }
-}
-
 bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data)
 {
     int left_tile = x / TILE_SIZE_WIDTH;
@@ -61,7 +34,8 @@ bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map
     int top_tile = y / TILE_SIZE_HEIGHT;
     int bottom_tile = (y + h_player - 1) / TILE_SIZE_HEIGHT;
 
-    for (int i = top_tile; i <= bottom_tile; ++i) {
+    for (int i = top_tile; i <= bottom_tile; ++i) 
+    {
         for (int j = left_tile; j <= right_tile; ++j) 
         {
             if (map_data[i][j] != 0) 
@@ -80,17 +54,74 @@ bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map
     return false;
 }
 
+void Character::HandleInput(SDL_Event& event)
+{
+    if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
+    {
+        switch (event.key.keysym.sym)
+        {
+            case SDLK_UP:
+                if (on_ground_)
+                {
+                    vel_y_ = jump;
+                    on_ground_ = false;
+                }
+                break;
+            case SDLK_LEFT: target_speed_x_ = -SPEED;
+                            vel_x_= target_speed_x_; 
+                            flag_left_ = true;
+                            break;
+            case SDLK_RIGHT: target_speed_x_ = SPEED;
+                            vel_x_= target_speed_x_;
+                            flag_right_ = true;
+                            break;
+        }
+    }
+    else if (event.type == SDL_KEYUP)
+    {
+        switch (event.key.keysym.sym)
+        {
+            case SDLK_LEFT: flag_left_ = false;
+                            if(!flag_right_) target_speed_x_ = 0;
+                            break;
 
+            case SDLK_RIGHT: flag_right_ = false;
+                            if(!flag_left_) target_speed_x_ = 0;
+                            break;
+        }
+    }
+}
 
 void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data)
 {
+    bool was_on_ground = on_ground_;
+    if(on_ground_) 
+    {
+        if (vel_x_ < target_speed_x_)
+        {
+            vel_x_ += gravity_x * delta_time;
+            if(vel_x_ > target_speed_x_) vel_x_ = target_speed_x_;
+        }
+        else if (vel_x_ > target_speed_x_)
+        {
+            vel_x_ -= gravity_x * delta_time;
+            if(vel_x_ < target_speed_x_) vel_x_ = target_speed_x_;
+        }
+    }
     double new_pos_x = pos_x_ + vel_x_ * delta_time;
     if (!CheckCollision((int)new_pos_x, (int)pos_y_, map_data))
+    {
         pos_x_ = new_pos_x;
+    }
+    else
+    {
+        if(vel_x_ > 0)
+        {
+            vel_x_ = 0;
+        }
+    }
 
-    vel_y_ += gravity_ * delta_time;
-    if (vel_y_ > max_fall_) vel_y_ = max_fall_;
-
+    vel_y_ += gravity_y * delta_time;
     double new_pos_y = pos_y_ + vel_y_ * delta_time;
     if (!CheckCollision((int)pos_x_, (int)new_pos_y, map_data))
     {
@@ -105,7 +136,20 @@ void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data
             on_ground_ = true;
         }
     }
-
+    if (!was_on_ground && on_ground_) 
+    {
+        if(!flag_left_ && !flag_right_)
+        {
+            vel_x_ = 0;           
+            target_speed_x_ = 0; 
+        }   
+        else
+        {
+            if(flag_left_) target_speed_x_ = -SPEED;
+            else target_speed_x_ = SPEED;
+        }
+    }
+    
     player_.SetRect((int)pos_x_, (int)pos_y_);
 }
 

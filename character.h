@@ -20,13 +20,16 @@ private:
     Graphic player_;
     double pos_x_, pos_y_;
     double vel_x_, vel_y_;
-    double gravity_;
-    double max_fall_;
+    double gravity_y;
+    double gravity_x;
     double jump;
-    const double SPEED = 200.0;
-    bool on_ground_;
+    const double SPEED = 150.0;
+    double target_speed_x_ = 0.0;
     int h_player = 38;
     int w_player = 21;
+    bool on_ground_;
+    bool flag_right_;
+    bool flag_left_;
     bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
 };
 
