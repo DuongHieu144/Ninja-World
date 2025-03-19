@@ -14,6 +14,7 @@ public:
     void HandleInput(SDL_Event& event);
     void Move(double delta_time, std::vector<std::vector<int> >& map_data);
     void Render(SDL_Renderer* des, SDL_Rect* camera);
+    void ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera);
     SDL_Rect GetRect() const { return player_.GetRect(); }
 
 private:

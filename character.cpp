@@ -153,6 +153,30 @@ void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data
     player_.SetRect((int)pos_x_, (int)pos_y_);
 }
 
+void Character::ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera) 
+{
+    std::string text = "X: " + std::to_string((int)pos_x_) + "  Y: " + std::to_string((int)pos_y_);
+
+    SDL_Color textColor = {255, 255, 255}; 
+
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), textColor);
+    if (textSurface != nullptr) 
+    {
+        SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+
+        int textW = textSurface->w;
+        int textH = textSurface->h;
+
+        SDL_Rect renderQuad = {SCREEN_WIDTH - textW - 10, 10, textW, textH};  
+
+        SDL_RenderCopy(renderer, textTexture, nullptr, &renderQuad);
+
+        SDL_FreeSurface(textSurface);
+        SDL_DestroyTexture(textTexture);
+    }
+}
+
+
 void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
 {
     SDL_Rect render_rect;

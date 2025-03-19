@@ -1,7 +1,6 @@
 #ifndef COMMON_FUNC_H
 #define COMMON_FUNC_H
 
-#include <windows.h>
 #include <string>
 #include <SDL.h>
 #include <SDL_image.h>
@@ -11,6 +10,7 @@
 extern SDL_Window* g_window;
 extern SDL_Renderer* g_render;
 extern SDL_Event g_event;
+extern TTF_Font* g_font;
 
 const int SCREEN_WIDTH = 960;
 const int SCREEN_HEIGHT = 540;

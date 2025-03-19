@@ -6,6 +6,7 @@
 
 SDL_Window* g_window = NULL;
 SDL_Renderer* g_render = NULL;
+TTF_Font* g_font = NULL;
 SDL_Event g_event;
 
 Graphic g_background; 
@@ -16,7 +17,8 @@ Enemy enemy1;
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
-bool InitData() {
+bool InitData() 
+{
     if (SDL_Init(SDL_INIT_VIDEO) < 0) return false;
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     g_window = SDL_CreateWindow("Ninja Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -25,6 +27,8 @@ bool InitData() {
     if (!g_render) return false;
     SDL_SetRenderDrawColor(g_render, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) return false;
+    if (TTF_Init() == -1) return false;
+    g_font = TTF_OpenFont("arial.ttf", 20);
     return true;
 }
 
@@ -60,9 +64,11 @@ void Close() {
     g_character.~Character(); 
     SDL_DestroyRenderer(g_render);
     SDL_DestroyWindow(g_window);
+    TTF_CloseFont(g_font);
     g_render = NULL;
     g_window = NULL;
     IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -98,6 +104,7 @@ int main(int argc, char* argv[])
         SDL_RenderCopy(g_render, g_background.GetObject(), &src_rect, &dst_rect);
 
         g_character.Render(g_render, &camera);
+        g_character.ShowPosition(g_render, g_font, &camera);
         enemy1.Render(g_render, &camera);
         SDL_RenderPresent(g_render);
     }
