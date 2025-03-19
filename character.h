@@ -15,6 +15,7 @@ public:
     void Move(double delta_time, std::vector<std::vector<int> >& map_data);
     void Render(SDL_Renderer* des, SDL_Rect* camera);
     void ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera);
+    bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
     SDL_Rect GetRect() const { return player_.GetRect(); }
 
 private:
@@ -31,7 +32,6 @@ private:
     bool on_ground_;
     bool flag_right_;
     bool flag_left_;
-    bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
 };
 
 #endif
