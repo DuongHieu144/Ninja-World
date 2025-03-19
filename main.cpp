@@ -2,6 +2,7 @@
 #include "graphic.h"
 #include "character.h"
 #include "map.h"
+#include "enemy.h"
 
 SDL_Window* g_window = NULL;
 SDL_Renderer* g_render = NULL;
@@ -10,6 +11,8 @@ SDL_Event g_event;
 Graphic g_background; 
 Character g_character; 
 std::vector<std::vector<int> > map_data;
+std::vector<Enemy> enemy_list;
+Enemy enemy1;
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
@@ -29,6 +32,15 @@ bool LoadResources() {
     if (!g_background.LoadImg("background.png", g_render)) return false;
     if (!g_character.LoadImg("character.png", g_render)) return false;
     LoadMapFromFile("map2.txt", map_data);
+    return true;
+}
+
+bool LoadEnemy()
+{
+    if(!enemy1.LoadImg("enemy.png", g_render)) return false;
+    enemy1.SetPosition(100, 100);
+    enemy1.SetHP(100);
+    enemy_list.push_back(enemy1);
     return true;
 }
 
@@ -54,10 +66,11 @@ void Close() {
     SDL_Quit();
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
     if (!InitData()) return -1;
     if (!LoadResources()) return -1;
-
+    if (!LoadEnemy()) return -1;
     bool is_quit = false;
 
     Uint64 now = SDL_GetPerformanceCounter();
@@ -85,7 +98,7 @@ int main(int argc, char* argv[]) {
         SDL_RenderCopy(g_render, g_background.GetObject(), &src_rect, &dst_rect);
 
         g_character.Render(g_render, &camera);
-
+        enemy1.Render(g_render, &camera);
         SDL_RenderPresent(g_render);
     }
 
