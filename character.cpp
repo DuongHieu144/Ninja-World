@@ -4,13 +4,13 @@
 
 Character::Character()
 {
-    pos_x_ = 100;
-    pos_y_ = 100;
+    pos_x_ = 90;
+    pos_y_ = 418;
     vel_x_ = 0;
     vel_y_ = 0;
     gravity_y = 1000.0;
     gravity_x = 600.0;
-    jump = -350.0;
+    jump = -400.0;
     on_ground_ = false;
     flag_right_ = false;
     flag_left_ = false;
