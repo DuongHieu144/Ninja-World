@@ -38,10 +38,24 @@ bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map
     {
         for (int j = left_tile; j <= right_tile; ++j) 
         {
-            if (map_data[i][j] != 0) 
+            if (map_data[i][j] == 0) 
             {
-                return true;
+                continue;
             }
+            if (map_data[i][j] == 2)
+            {
+                if (vel_y_ > 0)
+                {
+                    int platform_y = i * TILE_SIZE_HEIGHT;
+                    if (pos_y_ + h_player <= platform_y + 5)
+                    {
+                        return true;
+                    }
+                }
+                continue; 
+            }
+            if(map_data[i][j] == 1) return true;
+
         }
     }
     if (x < 0 || x + w_player > map_width || y < 0 || y + h_player > map_height)

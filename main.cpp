@@ -33,16 +33,16 @@ bool InitData()
 }
 
 bool LoadResources() {
-    if (!g_background.LoadImg("img/background.png", g_render)) return false;
+    if (!g_background.LoadImg("img/map.png", g_render)) return false;
     if (!g_character.LoadImg("img/character.png", g_render)) return false;
-    LoadMapFromFile("map2.txt", map_data);
+    LoadMapFromFile("map.txt", map_data);
     return true;
 }
 
 bool LoadEnemy()
 {
     if(!enemy1.LoadImg("img/enemy.png", g_render)) return false;
-    enemy1.SetPosition(100, 100);
+    enemy1.SetPosition(600, 300);
     enemy1.SetHP(100);
     enemy_list.push_back(enemy1);
     return true;
