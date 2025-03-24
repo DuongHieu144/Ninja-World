@@ -86,8 +86,8 @@ void Enemy::RespawnIfNeeded()
 void Enemy::Update(double delta_time, Character& player)
 {
     if (dead_) return;
-
-    if (moving_right_)
+    if(patrol_right_ == patrol_left_){}
+    else if (moving_right_)
     {
         pos_x_ += vel_x_ * delta_time;
         if (pos_x_ > patrol_right_)

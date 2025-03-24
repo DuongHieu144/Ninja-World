@@ -41,11 +41,11 @@ bool LoadResources() {
 bool LoadEnemy()
 {
     Enemy e1, e2;
-    e1.SetPosition(200, 420);
+    e1.SetPosition(200, 432);
     e1.SetHP(100);
     e1.SetDamage(10);
     e1.SetPatrolRange(100, 300);
-    e2.SetPosition(400, 346);
+    e2.SetPosition(400, 360);
     e2.SetHP(100);
     e2.SetDamage(10);
     e2.SetPatrolRange(350, 450);

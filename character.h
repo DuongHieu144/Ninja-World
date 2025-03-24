@@ -41,6 +41,7 @@ private:
     bool on_ground_;
     bool flag_right_;
     bool flag_left_;
+    bool is_right_;
     int hp_, max_hp_; 
     int mp_, max_mp_;
     

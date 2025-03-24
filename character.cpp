@@ -15,6 +15,7 @@ Character::Character()
     on_ground_ = false;
     flag_right_ = false;
     flag_left_ = false;
+    is_right_ = false;
     player_.SetRect((int)pos_x_, (int)pos_y_);
     hp_ = max_hp_ = 100;
     mp_ = max_mp_ = 50;  
@@ -86,13 +87,13 @@ SDL_Rect Character::GetAttackBox()
     SDL_Rect rect = GetRect(); 
     SDL_Rect attack_rect;
 
-    if (flag_right_) 
+    if (is_right_) 
     {
-        attack_rect = { rect.x + rect.w, rect.y, attack_range_, rect.h };
+        attack_rect = { rect.x , rect.y, attack_range_ + 21, 38 };
     } 
     else 
     {
-        attack_rect = { rect.x - attack_range_, rect.y, attack_range_, rect.h };
+        attack_rect = { rect.x - attack_range_, rect.y, attack_range_ + 21, 38 };
     }
 
     return attack_rect;
@@ -115,7 +116,11 @@ void Character::Attack(std::vector<Enemy>& enemies)
             SDL_Rect enemy_box = enemy.GetHitBox();
             if (SDL_HasIntersection(&attack_box, &enemy_box))
             {
-                enemy.TakeDamage(attack_damage_);
+                if(mp_>=5)
+                {
+                    enemy.TakeDamage(attack_damage_);
+                  //  mp_-=5;
+                }
             }
         }
     }
@@ -137,10 +142,12 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies)
             case SDLK_LEFT: target_speed_x_ = -SPEED;
                             vel_x_= target_speed_x_; 
                             flag_left_ = true;
+                            is_right_ = false;
                             break;
             case SDLK_RIGHT: target_speed_x_ = SPEED;
                             vel_x_= target_speed_x_;
                             flag_right_ = true;
+                            is_right_ = true;
                             break;
             case SDLK_SPACE: Attack(enemies);
         }
@@ -151,10 +158,20 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies)
         {
             case SDLK_LEFT: flag_left_ = false;
                             if(!flag_right_) target_speed_x_ = 0;
+                            else 
+                            {
+                                target_speed_x_ = SPEED;
+                                vel_x_ = target_speed_x_;
+                            }
                             break;
 
             case SDLK_RIGHT: flag_right_ = false;
                             if(!flag_left_) target_speed_x_ = 0;
+                            else 
+                            {
+                                target_speed_x_ = -SPEED;
+                                vel_x_ = target_speed_x_;
+                            }
                             break;
         }
     }
@@ -223,7 +240,7 @@ void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data
 
 void Character::ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera) 
 {
-    std::string text = "X: " + std::to_string((int)pos_x_) + "  Y: " + std::to_string((int)pos_y_) + "  HP: "+ std::to_string(hp_);
+    std::string text = "X: " + std::to_string((int)pos_x_) + "  Y: " + std::to_string((int)pos_y_) + "  HP: "+ std::to_string(hp_) + "  MP: " + std::to_string(mp_);
 
     SDL_Color textColor = {255, 255, 255}; 
 
