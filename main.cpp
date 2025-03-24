@@ -13,7 +13,6 @@ Graphic g_background;
 Character g_character; 
 std::vector<std::vector<int> > map_data;
 std::vector<Enemy> enemy_list;
-Enemy enemy1;
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
@@ -41,12 +40,19 @@ bool LoadResources() {
 
 bool LoadEnemy()
 {
-    if(!enemy1.LoadImg("img/enemy.png", g_render)) return false;
-    enemy1.SetPosition(200, 420);
-    enemy1.SetHP(100);
-    enemy1.SetDamage(10);
-    enemy1.SetPatrolRange(100, 300);
-    enemy_list.push_back(enemy1);
+    Enemy e1, e2;
+    e1.SetPosition(200, 420);
+    e1.SetHP(100);
+    e1.SetDamage(10);
+    e1.SetPatrolRange(100, 300);
+    e2.SetPosition(400, 346);
+    e2.SetHP(100);
+    e2.SetDamage(10);
+    e2.SetPatrolRange(350, 450);
+    enemy_list.push_back(e1);
+    enemy_list.push_back(e2);
+    if(!enemy_list[0].LoadImg("img/enemy.png", g_render)) return false;
+    if(!enemy_list[1].LoadImg("img/enemy.png", g_render)) return false;
     return true;
 }
 
@@ -84,24 +90,27 @@ int main(int argc, char* argv[])
     Uint64 now = SDL_GetPerformanceCounter();
     Uint64 last = now;
     double delta_time = 0.0;
-    while (!is_quit) {
+    while (!is_quit) 
+    {
         last = now;
-    now = SDL_GetPerformanceCounter();
-    delta_time = (double)(now - last) / SDL_GetPerformanceFrequency();
-        while (SDL_PollEvent(&g_event) != 0) {
-            if (g_event.type == SDL_QUIT) {
+        now = SDL_GetPerformanceCounter();
+        delta_time = (double)(now - last) / SDL_GetPerformanceFrequency();
+        while (SDL_PollEvent(&g_event) != 0) 
+        {
+            if (g_event.type == SDL_QUIT) 
+            {
                 is_quit = true;
             }
-            g_character.HandleInput(g_event);
-            if (g_event.key.keysym.sym == SDLK_SPACE)
-            {
-                enemy1.TakeDamage(10);
-            }
+            g_character.HandleInput(g_event, enemy_list);
         }
 
         g_character.Move(delta_time, map_data);
-        enemy1.Update(delta_time, g_character);
-        enemy1.RespawnIfNeeded();
+        for(auto& x : enemy_list)
+        {
+            x.Update(delta_time, g_character);
+            x.RespawnIfNeeded();
+        }
+        
         UpdateCamera();
 
         SDL_SetRenderDrawColor(g_render, 0, 0, 0, 255);
@@ -113,7 +122,7 @@ int main(int argc, char* argv[])
 
         g_character.Render(g_render, &camera);
         g_character.ShowPosition(g_render, g_font, &camera);
-        enemy1.Render(g_render, &camera);
+        for(auto&x : enemy_list) x.Render(g_render, &camera);
         SDL_RenderPresent(g_render);
     }
 

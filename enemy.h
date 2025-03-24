@@ -3,7 +3,8 @@
 
 #include "commonFunc.h"
 #include "graphic.h"
-#include "character.h"
+
+class Character;
 
 class Enemy
 {

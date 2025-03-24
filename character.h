@@ -4,20 +4,23 @@
 #include "graphic.h"
 #include "vector"
 
+class Enemy;
+
 class Character
 {
 public:
     Character();
     ~Character();
 
-    void HandleInput(SDL_Event& event);
+    void HandleInput(SDL_Event& event, std::vector<Enemy>& enemies);
     void Move(double delta_time, std::vector<std::vector<int> >& map_data);
     
     void ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera);
     bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
     
     void TakeDamage(int damage);
-    int Attack() {return damage_ ;}
+    void Attack(std::vector<Enemy>& enemies);
+    SDL_Rect GetAttackBox();
     int GetHP() const { return hp_; } 
     int GetMP() const { return mp_; } 
 
@@ -40,7 +43,13 @@ private:
     bool flag_left_;
     int hp_, max_hp_; 
     int mp_, max_mp_;
-    int damage_;
+    
+    bool is_attacking_;
+    Uint32 last_attack_time_;
+    Uint32 attack_cooldown_; 
+    int attack_damage_;
+    int attack_range_;
+
 };
 
 #endif

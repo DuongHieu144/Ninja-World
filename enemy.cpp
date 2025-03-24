@@ -1,4 +1,5 @@
 #include "enemy.h"
+#include "character.h"
 
 Enemy::Enemy()
 {

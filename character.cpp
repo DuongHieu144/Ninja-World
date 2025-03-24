@@ -1,6 +1,7 @@
 #include "commonFunc.h"
 #include "character.h"
 #include "map.h"
+#include "enemy.h"
 
 Character::Character()
 {
@@ -15,8 +16,12 @@ Character::Character()
     flag_right_ = false;
     flag_left_ = false;
     player_.SetRect((int)pos_x_, (int)pos_y_);
-    hp_ = max_hp_ = 100; // khởi tạo HP
-    mp_ = max_mp_ = 50;  // khởi tạo MP
+    hp_ = max_hp_ = 100;
+    mp_ = max_mp_ = 50;  
+    attack_damage_ = 20;
+    attack_range_ = 40;
+    last_attack_time_ = 0;
+    attack_cooldown_ = 300; 
 }
 
 void Character::TakeDamage(int damage)
@@ -76,7 +81,47 @@ bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map
     return false;
 }
 
-void Character::HandleInput(SDL_Event& event)
+SDL_Rect Character::GetAttackBox()
+{
+    SDL_Rect rect = GetRect(); 
+    SDL_Rect attack_rect;
+
+    if (flag_right_) 
+    {
+        attack_rect = { rect.x + rect.w, rect.y, attack_range_, rect.h };
+    } 
+    else 
+    {
+        attack_rect = { rect.x - attack_range_, rect.y, attack_range_, rect.h };
+    }
+
+    return attack_rect;
+}
+
+void Character::Attack(std::vector<Enemy>& enemies)
+{
+    Uint32 now = SDL_GetTicks();
+    if (now - last_attack_time_ < attack_cooldown_) return; 
+
+    is_attacking_ = true;
+    last_attack_time_ = now;
+
+    SDL_Rect attack_box = GetAttackBox();
+
+    for (Enemy& enemy : enemies)
+    {
+        if (!enemy.IsDead())
+        {
+            SDL_Rect enemy_box = enemy.GetHitBox();
+            if (SDL_HasIntersection(&attack_box, &enemy_box))
+            {
+                enemy.TakeDamage(attack_damage_);
+            }
+        }
+    }
+}
+
+void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies)
 {
     if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
     {
@@ -97,6 +142,7 @@ void Character::HandleInput(SDL_Event& event)
                             vel_x_= target_speed_x_;
                             flag_right_ = true;
                             break;
+            case SDLK_SPACE: Attack(enemies);
         }
     }
     else if (event.type == SDL_KEYUP)
