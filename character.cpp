@@ -15,6 +15,14 @@ Character::Character()
     flag_right_ = false;
     flag_left_ = false;
     player_.SetRect((int)pos_x_, (int)pos_y_);
+    hp_ = max_hp_ = 100; // khởi tạo HP
+    mp_ = max_mp_ = 50;  // khởi tạo MP
+}
+
+void Character::TakeDamage(int damage)
+{
+    hp_ -= damage;
+    if (hp_ < 0) hp_ = 0;
 }
 
 Character::~Character()
@@ -169,7 +177,7 @@ void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data
 
 void Character::ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera) 
 {
-    std::string text = "X: " + std::to_string((int)pos_x_) + "  Y: " + std::to_string((int)pos_y_);
+    std::string text = "X: " + std::to_string((int)pos_x_) + "  Y: " + std::to_string((int)pos_y_) + "  HP: "+ std::to_string(hp_);
 
     SDL_Color textColor = {255, 255, 255}; 
 

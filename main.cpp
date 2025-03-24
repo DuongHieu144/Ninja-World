@@ -42,8 +42,10 @@ bool LoadResources() {
 bool LoadEnemy()
 {
     if(!enemy1.LoadImg("img/enemy.png", g_render)) return false;
-    enemy1.SetPosition(600, 300);
+    enemy1.SetPosition(200, 420);
     enemy1.SetHP(100);
+    enemy1.SetDamage(10);
+    enemy1.SetPatrolRange(100, 300);
     enemy_list.push_back(enemy1);
     return true;
 }
@@ -91,9 +93,15 @@ int main(int argc, char* argv[])
                 is_quit = true;
             }
             g_character.HandleInput(g_event);
+            if (g_event.key.keysym.sym == SDLK_SPACE)
+            {
+                enemy1.TakeDamage(10);
+            }
         }
 
         g_character.Move(delta_time, map_data);
+        enemy1.Update(delta_time, g_character);
+        enemy1.RespawnIfNeeded();
         UpdateCamera();
 
         SDL_SetRenderDrawColor(g_render, 0, 0, 0, 255);
