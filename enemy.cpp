@@ -136,12 +136,13 @@ void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list)
         enemy_list.push_back(e);
     }
     std::string e1, e2, e3, e4, e5;
-    e1 = "img/enemy.png";
-    bool tmp0 = enemy_list[0].LoadImg(e1, g_render);
-    bool tmp1 = enemy_list[1].LoadImg(e1, g_render);
-    bool tmp2 = enemy_list[2].LoadImg(e1, g_render);
-    bool tmp3 = enemy_list[3].LoadImg(e1, g_render);
-    bool tmp4 = enemy_list[4].LoadImg(e1, g_render);
+    e1 = "img/thucthao.png";
+    e2 = "img/ocma.png";
+    int c=-1;
+    for(int i=1; i<=5; i++)
+        bool tmp = enemy_list[++c].LoadImg(e1, g_render);
+    for(int i=1; i<=4; i++)
+        bool tmp = enemy_list[++c].LoadImg(e2, g_render);
 }
 
 void Enemy::Render(SDL_Renderer* screen, SDL_Rect* camera) 
