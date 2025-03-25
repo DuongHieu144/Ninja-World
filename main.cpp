@@ -40,19 +40,14 @@ bool LoadResources() {
 
 bool LoadEnemy()
 {
-    Enemy e1, e2;
-    e1.SetPosition(200, 432);
-    e1.SetHP(100);
-    e1.SetDamage(10);
-    e1.SetPatrolRange(100, 300);
-    e2.SetPosition(400, 360);
+    Enemy e2;
+    e2.SetPosition(700, 432);
     e2.SetHP(100);
     e2.SetDamage(10);
-    e2.SetPatrolRange(350, 450);
-    enemy_list.push_back(e1);
+    e2.SetPatrolRange(600, 800);
     enemy_list.push_back(e2);
     if(!enemy_list[0].LoadImg("img/enemy.png", g_render)) return false;
-    if(!enemy_list[1].LoadImg("img/enemy.png", g_render)) return false;
+    //if(!enemy_list[1].LoadImg("img/enemy.png", g_render)) return false;
     return true;
 }
 

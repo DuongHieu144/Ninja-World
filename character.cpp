@@ -84,16 +84,15 @@ bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map
 
 SDL_Rect Character::GetAttackBox()
 {
-    SDL_Rect rect = GetRect(); 
     SDL_Rect attack_rect;
 
     if (is_right_) 
     {
-        attack_rect = { rect.x , rect.y, attack_range_ + 21, 38 };
+        attack_rect = { int(pos_x_) , int (pos_y_), attack_range_ + 21, 38 };
     } 
     else 
     {
-        attack_rect = { rect.x - attack_range_, rect.y, attack_range_ + 21, 38 };
+        attack_rect = { int (pos_x_) - attack_range_, int (pos_y_), attack_range_ + 21, 38 };
     }
 
     return attack_rect;
@@ -119,7 +118,7 @@ void Character::Attack(std::vector<Enemy>& enemies)
                 if(mp_>=5)
                 {
                     enemy.TakeDamage(attack_damage_);
-                  //  mp_-=5;
+                    mp_-=5;
                 }
             }
         }
