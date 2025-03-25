@@ -3,6 +3,7 @@
 
 #include "commonFunc.h"
 #include "graphic.h"
+#include <vector>
 
 class Character;
 
@@ -47,5 +48,7 @@ private:
     int w_, h_;
 
 };
+
+void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list);
 
 #endif

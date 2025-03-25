@@ -40,14 +40,7 @@ bool LoadResources() {
 
 bool LoadEnemy()
 {
-    Enemy e2;
-    e2.SetPosition(700, 432);
-    e2.SetHP(100);
-    e2.SetDamage(10);
-    e2.SetPatrolRange(600, 800);
-    enemy_list.push_back(e2);
-    if(!enemy_list[0].LoadImg("img/enemy.png", g_render)) return false;
-    //if(!enemy_list[1].LoadImg("img/enemy.png", g_render)) return false;
+    LoadEnemyFromFile("enemy.txt", enemy_list);
     return true;
 }
 

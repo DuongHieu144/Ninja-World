@@ -1,5 +1,6 @@
 #include "enemy.h"
 #include "character.h"
+#include <fstream>
 
 Enemy::Enemy()
 {
@@ -119,6 +120,28 @@ void Enemy::Update(double delta_time, Character& player)
             player.TakeDamage(attack_damage_); 
         }
     }
+}
+
+void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list)
+{
+    std::ifstream file(path);
+    int x, y, l, r, hp, damage;
+    while(file>>x>>y>>l>>r>>hp>>damage)
+    {
+        Enemy e;
+        e.SetPosition(x, y);
+        e.SetPatrolRange(l, r);
+        e.SetHP(hp);
+        e.SetDamage(damage);
+        enemy_list.push_back(e);
+    }
+    std::string e1, e2, e3, e4, e5;
+    e1 = "img/enemy.png";
+    bool tmp0 = enemy_list[0].LoadImg(e1, g_render);
+    bool tmp1 = enemy_list[1].LoadImg(e1, g_render);
+    bool tmp2 = enemy_list[2].LoadImg(e1, g_render);
+    bool tmp3 = enemy_list[3].LoadImg(e1, g_render);
+    bool tmp4 = enemy_list[4].LoadImg(e1, g_render);
 }
 
 void Enemy::Render(SDL_Renderer* screen, SDL_Rect* camera) 
