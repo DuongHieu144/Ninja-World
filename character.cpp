@@ -17,12 +17,74 @@ Character::Character()
     flag_left_ = false;
     is_right_ = false;
     player_.SetRect((int)pos_x_, (int)pos_y_);
-    hp_ = max_hp_ = 100;
-    mp_ = max_mp_ = 50;  
+    hp_ = max_hp_ = 500;
+    mp_ = max_mp_ = 200;  
     attack_damage_ = 20;
     attack_range_ = 40;
     last_attack_time_ = 0;
-    attack_cooldown_ = 300; 
+    attack_cooldown_ = 500; 
+
+    quest_stage_ = 0;
+    active_quest_ = nullptr;
+}
+
+void Character::SetQuest(Quest* q)
+{
+    active_quest_ = q;
+}
+
+void Character::DoQuest()
+{
+    if(active_quest_)
+    {
+        active_quest_->InCurrent();
+        if(active_quest_->IsCompleted())
+        {
+            NextQuest();
+        }
+    }
+}
+
+void Character::QuestReward()
+{
+    int type = active_quest_->GetRewardType();
+    if(type == 1) 
+    {
+        attack_cooldown_ = 300;
+        attack_damage_ +=10;
+        max_hp_ += 200;
+        max_mp_ += 100;
+    }
+    else if(type == 2) 
+    {
+        jump = -400;
+        max_hp_ += 200;
+        max_mp_ += 50;
+        attack_damage_ +=20;
+    }
+    else if(type == 3)
+    {
+        max_hp_ += 200;
+        max_mp_ += 50;
+        attack_damage_ +=20;
+    }
+}
+
+void Character::NextQuest()
+{
+    quest_stage_ ++;
+    active_quest_ = nullptr;
+}
+
+std::string Character::GetCurrentQuestInfo()
+{
+    if(active_quest_)
+    {
+        return "Mission: " + active_quest_->GetDescription() + 
+        " (" + std::to_string(active_quest_->GetProgress()) +
+        "/" + std::to_string(active_quest_->GetGoal()) + ")";
+    }
+    return "!Mission";
 }
 
 void Character::TakeDamage(int damage)
@@ -98,7 +160,7 @@ SDL_Rect Character::GetAttackBox()
     return attack_rect;
 }
 
-void Character::Attack(std::vector<Enemy>& enemies)
+void Character::Attack(std::vector<Enemy>& enemies, Character& player)
 {
     Uint32 now = SDL_GetTicks();
     if (now - last_attack_time_ < attack_cooldown_) return; 
@@ -117,7 +179,7 @@ void Character::Attack(std::vector<Enemy>& enemies)
             {
                 if(mp_>=5)
                 {
-                    enemy.TakeDamage(attack_damage_);
+                    enemy.TakeDamage(attack_damage_, player);
                     mp_-=5;
                 }
             }
@@ -125,7 +187,7 @@ void Character::Attack(std::vector<Enemy>& enemies)
     }
 }
 
-void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies)
+void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Character& player)
 {
     if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
     {
@@ -148,7 +210,7 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies)
                             flag_right_ = true;
                             is_right_ = true;
                             break;
-            case SDLK_SPACE: Attack(enemies);
+            case SDLK_SPACE: Attack(enemies, player);
         }
     }
     else if (event.type == SDL_KEYUP)

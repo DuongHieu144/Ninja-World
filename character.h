@@ -3,6 +3,7 @@
 
 #include "graphic.h"
 #include "vector"
+#include "quest.h"
 
 class Enemy;
 
@@ -12,17 +13,25 @@ public:
     Character();
     ~Character();
 
-    void HandleInput(SDL_Event& event, std::vector<Enemy>& enemies);
+    void HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Character& player);
     void Move(double delta_time, std::vector<std::vector<int> >& map_data);
     
     void ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera);
     bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
     
     void TakeDamage(int damage);
-    void Attack(std::vector<Enemy>& enemies);
+    void Attack(std::vector<Enemy>& enemies, Character& player);
     SDL_Rect GetAttackBox();
     int GetHP() const { return hp_; } 
     int GetMP() const { return mp_; } 
+
+    void SetQuest(Quest* q);
+    void DoQuest();
+    void QuestReward();
+    void NextQuest();
+    int GetQuestState() {return quest_stage_;}
+    std::string GetCurrentQuestInfo();
+    Quest* GetCurrentQuest() {return active_quest_;}
 
     bool LoadImg(std::string path, SDL_Renderer* screen);
     void Render(SDL_Renderer* des, SDL_Rect* camera);
@@ -51,6 +60,8 @@ private:
     int attack_damage_;
     int attack_range_;
 
+    Quest* active_quest_;
+    int quest_stage_;
 };
 
 #endif
