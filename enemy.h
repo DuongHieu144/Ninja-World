@@ -16,7 +16,7 @@ public:
     void SetPosition(double x, double y);
     void SetHP(int hp);
     void SetDamage(int damage);
-    void TakeDamage(int damage);
+    void TakeDamage(int damage,Character& player);
     void SetPatrolRange(int left, int right);
     bool IsDead() const;
 

@@ -43,13 +43,14 @@ void Enemy::SetPatrolRange(int left, int right)
     patrol_right_ = right;
 }
 
-void Enemy::TakeDamage(int damage)
+void Enemy::TakeDamage(int damage, Character& player)
 {
     if (!dead_)
     {
         hp_ -= damage;
         if (hp_ <= 0)
         {
+            player.DoQuest();
             hp_ = 0;
             dead_ = true;
             death_time_ = SDL_GetTicks();
@@ -138,11 +139,18 @@ void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list)
     std::string e1, e2, e3, e4, e5;
     e1 = "img/thucthao.png";
     e2 = "img/ocma.png";
+    e3 = "img/khi.png";
+    e4 = "img/oc.png";
     int c=-1;
     for(int i=1; i<=5; i++)
         bool tmp = enemy_list[++c].LoadImg(e1, g_render);
     for(int i=1; i<=4; i++)
         bool tmp = enemy_list[++c].LoadImg(e2, g_render);
+    for(int i=1; i<=6; i++)
+        bool tmp = enemy_list[++c].LoadImg(e3, g_render);
+    for(int i=1; i<=4; i++)
+        bool tmp = enemy_list[++c].LoadImg(e4, g_render);
+    
 }
 
 void Enemy::Render(SDL_Renderer* screen, SDL_Rect* camera) 
