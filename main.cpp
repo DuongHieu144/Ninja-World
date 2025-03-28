@@ -16,10 +16,9 @@ std::vector<std::vector<int> > map_data;
 std::vector<Enemy> enemy_list;
 VillageChief village_npc;
 
-// Danh sách nhiệm vụ
-Quest quest1("Kill 3 enemies", 3, 1);  // Tăng HP +20
-Quest quest2("Kill 5 enemies", 5, 2);   // Tăng damage +5
-Quest quest3("Kill 7 enemies", 7, 3);   // Mở khóa kỹ năng
+Quest quest1("Kill 3 enemies", 3, 1);  
+Quest quest2("Kill 5 enemies", 5, 2);   
+Quest quest3("Kill 7 enemies", 7, 3);  
 
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
@@ -39,9 +38,10 @@ bool InitData()
     return true;
 }
 
-bool LoadResources() {
+bool LoadResources() 
+{
     if (!g_background.LoadImg("img/map.png", g_render)) return false;
-    if (!g_character.LoadImg("img/character.png", g_render)) return false;
+    if (!g_character.LoadImg(g_render)) return false;;
     LoadMapFromFile("map.txt", map_data);
     return true;
 }
@@ -101,13 +101,12 @@ int main(int argc, char* argv[])
             g_character.HandleInput(g_event, enemy_list, g_character);
             if (g_event.type == SDL_KEYDOWN && g_event.key.keysym.sym == SDLK_SPACE)
             {
-                SDL_Rect player_box = g_character.GetRect();
+                SDL_Rect player_box = g_character.GetPosition();
                 SDL_Rect npc_box = {300, 200, 300, 300};
                 if (SDL_HasIntersection(&player_box, &npc_box)) 
                     village_npc.Interact(g_character);
             }
         }   
-
         g_character.Move(delta_time, map_data);
         for(auto& x : enemy_list)
         {
@@ -128,15 +127,15 @@ int main(int argc, char* argv[])
         g_character.ShowPosition(g_render, g_font, &camera);
         for(auto&x : enemy_list) x.Render(g_render, &camera);
 
-            // Hiển thị nhiệm vụ dọc theo biên trên của màn hình
+          
         std::string quest_text = g_character.GetCurrentQuestInfo();
-        SDL_Color textColor = {255, 255, 0}; // Màu chữ vàng
+        SDL_Color textColor = {255, 255, 0};
 
         SDL_Surface* surface = TTF_RenderText_Solid(g_font, quest_text.c_str(), textColor);
         if(surface != nullptr)
         {
             SDL_Texture* texture = SDL_CreateTextureFromSurface(g_render, surface);
-            SDL_Rect text_rect = {20, 10, surface->w, surface->h}; // Căn chỉnh vị trí trên cùng màn hình
+            SDL_Rect text_rect = {20, 10, surface->w, surface->h}; 
             SDL_RenderCopy(g_render, texture, NULL, &text_rect);
             SDL_FreeSurface(surface);
             SDL_DestroyTexture(texture);

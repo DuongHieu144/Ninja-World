@@ -11,10 +11,11 @@ Character::Character()
     vel_y_ = 0;
     gravity_y = 1000.0;
     gravity_x = 600.0;
-    jump = -400.0;
+    jump = -330.0;
     on_ground_ = false;
     flag_right_ = false;
     flag_left_ = false;
+    flag_up_ = false;
     is_right_ = false;
     player_.SetRect((int)pos_x_, (int)pos_y_);
     hp_ = max_hp_ = 500;
@@ -26,6 +27,13 @@ Character::Character()
 
     quest_stage_ = 0;
     active_quest_ = nullptr;
+
+    state = 0;
+    frame = 0;
+    frame_width = 21;  
+    frame_height = 38;
+    frame_delay = 100;
+    last_frame_time = SDL_GetTicks();
 }
 
 void Character::SetQuest(Quest* q)
@@ -98,9 +106,16 @@ Character::~Character()
     player_.Free();
 }
 
-bool Character::LoadImg(std::string path, SDL_Renderer* screen)
+bool Character::LoadImg(SDL_Renderer* renderer)
 {
-    return player_.LoadImg(path, screen);
+    bool tmp1, tmp2, tmp3, tmp4, tmp5, tmp6;
+    tmp1 = run_right_texture.LoadImg("img/run_right.png", renderer);
+    tmp2 = run_left_texture.LoadImg("img/run_left.png", renderer);
+    tmp3 = jump_right_texture.LoadImg("img/jump_right.png", renderer);
+    tmp4 = jump_left_texture.LoadImg("img/jump_left.png", renderer);
+    tmp5 = stand_right_texture.LoadImg("img/stand_right.png", renderer);
+    tmp6 = stand_left_texture.LoadImg("img/stand_left.png", renderer);
+    return (tmp1 & tmp2 & tmp3 & tmp4 & tmp5 & tmp6);
 }
 
 bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data)
@@ -194,21 +209,28 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Chara
         switch (event.key.keysym.sym)
         {
             case SDLK_UP:
-                if (on_ground_)
+                flag_up_ = true;
+                if (on_ground_ && flag_up_)
                 {
                     vel_y_ = jump;
                     on_ground_ = false;
+                    UpdateState(2);
                 }
+                
                 break;
             case SDLK_LEFT: target_speed_x_ = -SPEED;
                             vel_x_= target_speed_x_; 
                             flag_left_ = true;
                             is_right_ = false;
+                            if(!on_ground_) UpdateState(2);
+                            else UpdateState(1);
                             break;
             case SDLK_RIGHT: target_speed_x_ = SPEED;
                             vel_x_= target_speed_x_;
                             flag_right_ = true;
                             is_right_ = true;
+                            if(!on_ground_) UpdateState(2);
+                            else UpdateState(1);
                             break;
             case SDLK_SPACE: Attack(enemies, player);
         }
@@ -218,22 +240,41 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Chara
         switch (event.key.keysym.sym)
         {
             case SDLK_LEFT: flag_left_ = false;
-                            if(!flag_right_) target_speed_x_ = 0;
+                            if(!flag_right_) 
+                            {
+                                target_speed_x_ = 0;
+                                UpdateState(0);
+                            }
                             else 
                             {
                                 target_speed_x_ = SPEED;
                                 vel_x_ = target_speed_x_;
+                                is_right_ = true;
+                                if(flag_up_) UpdateState(2);
+                                else UpdateState(1);
                             }
                             break;
 
             case SDLK_RIGHT: flag_right_ = false;
-                            if(!flag_left_) target_speed_x_ = 0;
+                            if(!flag_left_) 
+                            {
+                                target_speed_x_ = 0;
+                                UpdateState(0);
+                            }
                             else 
                             {
                                 target_speed_x_ = -SPEED;
                                 vel_x_ = target_speed_x_;
+                                is_right_ = false;
+                                if(flag_up_) UpdateState(2);
+                                else UpdateState(1);
                             }
                             break;
+            case SDLK_UP: if(!on_ground_) UpdateState(2);
+                            else UpdateState(0);
+                            flag_up_ = false;
+                            break;
+                            
         }
     }
 }
@@ -280,6 +321,8 @@ void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data
         {
             vel_y_ = 0;
             on_ground_ = true;
+           if(on_ground_ && !was_on_ground) UpdateState(0);
+           if(flag_left_ || flag_right_) UpdateState(1);
         }
     }
     if (!was_on_ground && on_ground_) 
@@ -322,15 +365,95 @@ void Character::ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* c
     }
 }
 
+void Character::UpdateState(int new_state)
+{
+    if(state == new_state) return;
+    state = new_state;
+    frame=0;
+    switch (state) 
+    {
+        case 0:
+            frame_width = 21;
+            frame_height = 38;
+            frame_count = 1; 
+            break;
+        case 1:
+            frame_width = 21;
+            frame_height = 38;
+            frame_count = 6; 
+            break;
+        case 2:
+            frame_width = 26;
+            frame_height = 38;
+            frame_count = 6; 
+            break;
+    }
+}
+
+void Character::UpdateAnimation()
+{
+    Uint32 current_time = SDL_GetTicks();
+    if(current_time > last_frame_time + 100)
+    {
+        frame = (frame+1) % frame_count;
+        last_frame_time = current_time;
+    }
+}
+
 
 void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
 {
-    SDL_Rect render_rect;
-    render_rect.x = (int)pos_x_ - camera->x;
-    render_rect.y = (int)pos_y_ - camera->y;
-    render_rect.w = TILE_SIZE_WIDTH;
-    render_rect.h = TILE_SIZE_HEIGHT;
+    SDL_Rect src_rect = { frame * frame_width, 0, frame_width, frame_height };
+    SDL_Rect dst_rect = { (int)pos_x_ - camera->x, (int)pos_y_ - camera->y, frame_width, frame_height };
 
-    player_.SetRect(render_rect.x, render_rect.y);
-    player_.Render(des, NULL);
+    Uint32 current_time = SDL_GetTicks();
+    if(current_time > last_frame_time + 100)
+    {
+        frame ++;
+        if(frame == frame_count) frame = 0;
+        last_frame_time = current_time;
+    }
+
+    if (!is_right_) {
+        if (state == 0) {
+            stand_left_texture.Render(des, &src_rect, &dst_rect);
+        } 
+        else if (state == 1) {
+            run_left_texture.Render(des, &src_rect, &dst_rect);
+        } 
+        else if (state == 2) {
+            jump_left_texture.Render(des, &src_rect, &dst_rect);
+        }
+    } 
+    else {
+        if (state == 0) {
+            stand_right_texture.Render(des, &src_rect, &dst_rect);
+        } 
+        else if (state == 1) {
+            run_right_texture.Render(des, &src_rect, &dst_rect);
+        } 
+        else if (state == 2) {
+            jump_right_texture.Render(des, &src_rect, &dst_rect);
+        }
+    }
+    
+
+    // SDL_Rect render_rect;
+    // render_rect.x = (int)pos_x_ - camera->x;
+    // render_rect.y = (int)pos_y_ - camera->y;
+
+    // if(is_right_)
+    // {
+    //     stand_right_texture.SetRect(render_rect.x, render_rect.y);
+    //     stand_right_texture.Render(des, NULL);
+    // }
+    // else
+    // {
+    //     stand_left_texture.SetRect(render_rect.x, render_rect.y);
+    //     stand_left_texture.Render(des, NULL);
+    // }
+    
+
+
 }
+

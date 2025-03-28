@@ -33,9 +33,14 @@ public:
     std::string GetCurrentQuestInfo();
     Quest* GetCurrentQuest() {return active_quest_;}
 
-    bool LoadImg(std::string path, SDL_Renderer* screen);
+    bool LoadImg(SDL_Renderer* renderer);
     void Render(SDL_Renderer* des, SDL_Rect* camera);
     SDL_Rect GetRect() const { return player_.GetRect(); }
+    SDL_Rect GetPosition() const { return {int(pos_x_) , int (pos_y_), 21, 38};}
+
+    void UpdateState(int new_state);
+    void UpdateAnimation();
+
 private:
     Graphic player_;
     double pos_x_, pos_y_;
@@ -50,6 +55,7 @@ private:
     bool on_ground_;
     bool flag_right_;
     bool flag_left_;
+    bool flag_up_;
     bool is_right_;
     int hp_, max_hp_; 
     int mp_, max_mp_;
@@ -62,6 +68,21 @@ private:
 
     Quest* active_quest_;
     int quest_stage_;
+
+    int state;
+    int frame;
+    int frame_count;
+    int frame_width;
+    int frame_height;
+    Uint32 last_frame_time;
+    int frame_delay;
+
+    Graphic run_right_texture;
+    Graphic run_left_texture;
+    Graphic jump_right_texture;
+    Graphic jump_left_texture;
+    Graphic stand_right_texture;
+    Graphic stand_left_texture;
 };
 
 #endif
