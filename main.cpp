@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
                 is_quit = true;
             }
             g_character.HandleInput(g_event, enemy_list, g_character);
-            if (g_event.type == SDL_KEYDOWN && g_event.key.keysym.sym == SDLK_SPACE)
+            if (g_event.type == SDL_KEYDOWN && g_event.key.keysym.sym == SDLK_RETURN)
             {
                 SDL_Rect player_box = g_character.GetPosition();
                 SDL_Rect npc_box = {300, 200, 300, 300};
@@ -107,6 +107,7 @@ int main(int argc, char* argv[])
                     village_npc.Interact(g_character);
             }
         }   
+        g_character.UpdateAnimation();
         g_character.Move(delta_time, map_data);
         for(auto& x : enemy_list)
         {

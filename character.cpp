@@ -232,7 +232,7 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Chara
                             if(!on_ground_) UpdateState(2);
                             else UpdateState(1);
                             break;
-            case SDLK_SPACE: Attack(enemies, player);
+            case SDLK_RETURN: Attack(enemies, player);
         }
     }
     else if (event.type == SDL_KEYUP)
@@ -244,6 +244,7 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Chara
                             {
                                 target_speed_x_ = 0;
                                 UpdateState(0);
+                                if(!on_ground_) UpdateState(2);
                             }
                             else 
                             {
@@ -260,6 +261,7 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Chara
                             {
                                 target_speed_x_ = 0;
                                 UpdateState(0);
+                                if(!on_ground_) UpdateState(2);
                             }
                             else 
                             {
@@ -395,7 +397,8 @@ void Character::UpdateAnimation()
     Uint32 current_time = SDL_GetTicks();
     if(current_time > last_frame_time + 100)
     {
-        frame = (frame+1) % frame_count;
+        frame ++;
+        if(frame == frame_count) frame = 0;
         last_frame_time = current_time;
     }
 }
@@ -405,14 +408,6 @@ void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
 {
     SDL_Rect src_rect = { frame * frame_width, 0, frame_width, frame_height };
     SDL_Rect dst_rect = { (int)pos_x_ - camera->x, (int)pos_y_ - camera->y, frame_width, frame_height };
-
-    Uint32 current_time = SDL_GetTicks();
-    if(current_time > last_frame_time + 100)
-    {
-        frame ++;
-        if(frame == frame_count) frame = 0;
-        last_frame_time = current_time;
-    }
 
     if (!is_right_) {
         if (state == 0) {
@@ -436,24 +431,6 @@ void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
             jump_right_texture.Render(des, &src_rect, &dst_rect);
         }
     }
-    
-
-    // SDL_Rect render_rect;
-    // render_rect.x = (int)pos_x_ - camera->x;
-    // render_rect.y = (int)pos_y_ - camera->y;
-
-    // if(is_right_)
-    // {
-    //     stand_right_texture.SetRect(render_rect.x, render_rect.y);
-    //     stand_right_texture.Render(des, NULL);
-    // }
-    // else
-    // {
-    //     stand_left_texture.SetRect(render_rect.x, render_rect.y);
-    //     stand_left_texture.Render(des, NULL);
-    // }
-    
-
 
 }
 
