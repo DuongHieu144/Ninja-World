@@ -139,11 +139,12 @@ int main(int argc, char* argv[])
             if(SDL_HasIntersection(&player_box, &item_box))
             {
                 i_item = i;
+                g_character.PickUpItem(item_list[i].GetId());
                 break;
             }
         }
         if(i_item != -1) item_list.erase(item_list.begin()+i_item);
-        
+
         std::string quest_text = g_character.GetCurrentQuestInfo();
         SDL_Color textColor = {255, 255, 0};
 

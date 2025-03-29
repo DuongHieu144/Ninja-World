@@ -42,7 +42,9 @@ public:
     void UpdateState(int new_state);
     void UpdateAnimation();
 
-    
+    void PickUpItem(int id);
+    void UseItemHp();
+    void UseItemMp();
 
 private:
     Graphic player_;
@@ -86,6 +88,9 @@ private:
     Graphic jump_left_texture;
     Graphic stand_right_texture;
     Graphic stand_left_texture;
+
+    int item_hp;
+    int item_mp;
 };
 
 #endif

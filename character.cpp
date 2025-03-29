@@ -34,6 +34,9 @@ Character::Character()
     frame_height = 38;
     frame_delay = 100;
     last_frame_time = SDL_GetTicks();
+
+    item_hp = 0;
+    item_mp = 0;
 }
 
 void Character::SetQuest(Quest* q)
@@ -62,7 +65,6 @@ void Character::QuestReward()
         attack_damage_ +=10;
         max_hp_ += 200;
         max_mp_ += 100;
-        jump = -400;
     }
     else if(type == 2) 
     {
@@ -196,7 +198,7 @@ void Character::Attack(std::vector<Enemy>& enemies, Character& player, std::vect
                 if(mp_>=5)
                 {
                     enemy.TakeDamage(attack_damage_, player, item_list);
-                    //mp_-=5;
+                    mp_-=5;
                 }
             }
         }
@@ -234,6 +236,11 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Chara
                             else UpdateState(1);
                             break;
             case SDLK_RETURN: Attack(enemies, player, items);
+                            break;
+            case SDLK_1: UseItemHp();
+                        break;
+            case SDLK_2: UseItemMp();
+                        break;
         }
     }
     else if (event.type == SDL_KEYUP)
@@ -404,6 +411,32 @@ void Character::UpdateAnimation()
     }
 }
 
+void Character::PickUpItem(int id)
+{
+    if(id == 1) item_hp++;
+    if(id == 2) item_mp++;
+    std::cout<<"HP: "<<item_hp<<"   MP: "<<item_mp<<std::endl;
+}
+
+void Character::UseItemHp()
+{
+    if(item_hp > 0)
+    {
+        item_hp--;
+        if(hp_ + 200 >= max_hp_) hp_=max_hp_;
+        else hp_+=200;
+    }
+}
+
+void Character::UseItemMp()
+{
+    if(item_mp > 0)
+    {
+        item_mp--;
+        if(mp_ + 200 >= max_mp_) mp_=max_mp_;
+        else mp_+=200;
+    }
+}
 
 void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
 {
