@@ -1,6 +1,6 @@
 #include "enemy.h"
 #include "character.h"
-#include <fstream>
+#include "item.h"
 
 Enemy::Enemy()
 {
@@ -19,6 +19,11 @@ Enemy::Enemy()
 Enemy::~Enemy()
 {
     img_enemy_.Free();
+}
+
+void Enemy::SetId(int id)
+{
+    id_ = id;
 }
 
 void Enemy::SetPosition(double x, double y)
@@ -43,7 +48,7 @@ void Enemy::SetPatrolRange(int left, int right)
     patrol_right_ = right;
 }
 
-void Enemy::TakeDamage(int damage, Character& player)
+void Enemy::TakeDamage(int damage, Character& player, std::vector<Item>& items)
 {
     if (!dead_)
     {
@@ -54,6 +59,7 @@ void Enemy::TakeDamage(int damage, Character& player)
             hp_ = 0;
             dead_ = true;
             death_time_ = SDL_GetTicks();
+            DropItem(items);
         }
     }
 }
@@ -76,7 +82,7 @@ bool Enemy::LoadImg(std::string path, SDL_Renderer* screen)
 }
 
 
-void Enemy::RespawnIfNeeded()
+void Enemy::Respawn()
 {
     if (dead_ && SDL_GetTicks() - death_time_ >= 15000) 
     {
@@ -126,10 +132,11 @@ void Enemy::Update(double delta_time, Character& player)
 void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list)
 {
     std::ifstream file(path);
-    int x, y, l, r, hp, damage;
-    while(file>>x>>y>>l>>r>>hp>>damage)
+    int id, x, y, l, r, hp, damage;
+    while(file>>id>>x>>y>>l>>r>>hp>>damage)
     {
         Enemy e;
+        e.SetId(id);
         e.SetPosition(x, y);
         e.SetPatrolRange(l, r);
         e.SetHP(hp);
@@ -151,6 +158,23 @@ void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list)
     for(int i=1; i<=4; i++)
         bool tmp = enemy_list[++c].LoadImg(e4, g_render);
     
+}
+
+void Enemy::DropItem(std::vector<Item>& items)
+{
+    int drop_chance = rand() % 100;
+    Item new_item;
+    if(drop_chance <=40)
+    {
+        new_item.SetId(1);
+    }
+    else if(drop_chance <=80)
+    {
+        new_item.SetId(2);
+    }
+    new_item.SetPosition(pos_x_, pos_y_);
+    items.push_back(new_item);
+
 }
 
 void Enemy::Render(SDL_Renderer* screen, SDL_Rect* camera) 

@@ -3,6 +3,8 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
+#include <cstdlib>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_mixer.h>

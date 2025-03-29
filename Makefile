@@ -9,7 +9,7 @@ INCLUDE = -I src/include
 LIBS = -L src/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 # Các file nguồn
-SRCS = main.cpp graphic.cpp character.cpp map.cpp enemy.cpp villagechief.cpp 
+SRCS = main.cpp graphic.cpp character.cpp map.cpp enemy.cpp villagechief.cpp item.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 # Tên file output

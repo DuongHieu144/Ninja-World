@@ -175,7 +175,7 @@ SDL_Rect Character::GetAttackBox()
     return attack_rect;
 }
 
-void Character::Attack(std::vector<Enemy>& enemies, Character& player)
+void Character::Attack(std::vector<Enemy>& enemies, Character& player, std::vector<Item>& item_list)
 {
     Uint32 now = SDL_GetTicks();
     if (now - last_attack_time_ < attack_cooldown_) return; 
@@ -194,15 +194,15 @@ void Character::Attack(std::vector<Enemy>& enemies, Character& player)
             {
                 if(mp_>=5)
                 {
-                    enemy.TakeDamage(attack_damage_, player);
-                    mp_-=5;
+                    enemy.TakeDamage(attack_damage_, player, item_list);
+                    //mp_-=5;
                 }
             }
         }
     }
 }
 
-void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Character& player)
+void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Character& player, std::vector<Item>& items)
 {
     if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
     {
@@ -232,7 +232,7 @@ void Character::HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Chara
                             if(!on_ground_) UpdateState(2);
                             else UpdateState(1);
                             break;
-            case SDLK_RETURN: Attack(enemies, player);
+            case SDLK_RETURN: Attack(enemies, player, items);
         }
     }
     else if (event.type == SDL_KEYUP)

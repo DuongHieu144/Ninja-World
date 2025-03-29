@@ -4,6 +4,7 @@
 #include "graphic.h"
 #include "vector"
 #include "quest.h"
+#include "item.h"
 
 class Enemy;
 
@@ -13,14 +14,14 @@ public:
     Character();
     ~Character();
 
-    void HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Character& player);
+    void HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Character& player, std::vector<Item>& items);
     void Move(double delta_time, std::vector<std::vector<int> >& map_data);
     
     void ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera);
     bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
     
     void TakeDamage(int damage);
-    void Attack(std::vector<Enemy>& enemies, Character& player);
+    void Attack(std::vector<Enemy>& enemies, Character& player, std::vector<Item>& items);
     SDL_Rect GetAttackBox();
     int GetHP() const { return hp_; } 
     int GetMP() const { return mp_; } 

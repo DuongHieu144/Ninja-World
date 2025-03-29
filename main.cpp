@@ -4,6 +4,7 @@
 #include "map.h"
 #include "enemy.h"
 #include "villagechief.h"
+#include "item.h"
 
 SDL_Window* g_window = NULL;
 SDL_Renderer* g_render = NULL;
@@ -15,10 +16,13 @@ Character g_character;
 std::vector<std::vector<int> > map_data;
 std::vector<Enemy> enemy_list;
 VillageChief village_npc;
+std::vector<Item> item_list;
 
-Quest quest1("Kill 3 enemies", 3, 1);  
-Quest quest2("Kill 5 enemies", 5, 2);   
-Quest quest3("Kill 7 enemies", 7, 3);  
+Quest quest1("Kill 3 roses", 3, 1);  
+Quest quest2("Collect 5 purple shells", 5, 2);   
+Quest quest3("Kill 7 monkeys", 7, 3);  
+Quest quest4("Kill 10 snails", 10, 4);
+Quest quest5("Collect martial arts secrets from the boss", 1, 5);
 
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
@@ -41,7 +45,7 @@ bool InitData()
 bool LoadResources() 
 {
     if (!g_background.LoadImg("img/map.png", g_render)) return false;
-    if (!g_character.LoadImg(g_render)) return false;;
+    if (!g_character.LoadImg(g_render)) return false;
     LoadMapFromFile("map.txt", map_data);
     return true;
 }
@@ -86,7 +90,7 @@ int main(int argc, char* argv[])
     Uint64 now = SDL_GetPerformanceCounter();
     Uint64 last = now;
     double delta_time = 0.0;
-    village_npc.SetQuests({&quest1, &quest2, &quest3});
+    village_npc.SetQuests({&quest1, &quest2, &quest3, &quest4, &quest5});
     while (!is_quit) 
     {
         last = now;
@@ -98,7 +102,7 @@ int main(int argc, char* argv[])
             {
                 is_quit = true;
             }
-            g_character.HandleInput(g_event, enemy_list, g_character);
+            g_character.HandleInput(g_event, enemy_list, g_character, item_list);
             if (g_event.type == SDL_KEYDOWN && g_event.key.keysym.sym == SDLK_RETURN)
             {
                 SDL_Rect player_box = g_character.GetPosition();
@@ -112,9 +116,9 @@ int main(int argc, char* argv[])
         for(auto& x : enemy_list)
         {
             x.Update(delta_time, g_character);
-            x.RespawnIfNeeded();
+            x.Respawn();
         }
-        
+   
         UpdateCamera();
 
         SDL_SetRenderDrawColor(g_render, 0, 0, 0, 255);
@@ -127,7 +131,7 @@ int main(int argc, char* argv[])
         g_character.Render(g_render, &camera);
         g_character.ShowPosition(g_render, g_font, &camera);
         for(auto&x : enemy_list) x.Render(g_render, &camera);
-
+        for(auto& x : item_list) x.Render(g_render, &camera);
           
         std::string quest_text = g_character.GetCurrentQuestInfo();
         SDL_Color textColor = {255, 255, 0};
