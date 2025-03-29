@@ -19,7 +19,7 @@ VillageChief village_npc;
 std::vector<Item> item_list;
 
 Quest quest1("Kill 3 roses", 3, 1);  
-Quest quest2("Collect 5 purple shells", 5, 2);   
+Quest quest2("Kill 5 purple snails", 5, 2);   
 Quest quest3("Kill 7 monkeys", 7, 3);  
 Quest quest4("Kill 10 snails", 10, 4);
 Quest quest5("Collect martial arts secrets from the boss", 1, 5);
@@ -96,6 +96,7 @@ int main(int argc, char* argv[])
         last = now;
         now = SDL_GetPerformanceCounter();
         delta_time = (double)(now - last) / SDL_GetPerformanceFrequency();
+        SDL_Rect player_box = g_character.GetPosition();
         while (SDL_PollEvent(&g_event) != 0) 
         {
             if (g_event.type == SDL_QUIT) 
@@ -105,7 +106,6 @@ int main(int argc, char* argv[])
             g_character.HandleInput(g_event, enemy_list, g_character, item_list);
             if (g_event.type == SDL_KEYDOWN && g_event.key.keysym.sym == SDLK_RETURN)
             {
-                SDL_Rect player_box = g_character.GetPosition();
                 SDL_Rect npc_box = {300, 200, 300, 300};
                 if (SDL_HasIntersection(&player_box, &npc_box)) 
                     village_npc.Interact(g_character);
@@ -132,7 +132,18 @@ int main(int argc, char* argv[])
         g_character.ShowPosition(g_render, g_font, &camera);
         for(auto&x : enemy_list) x.Render(g_render, &camera);
         for(auto& x : item_list) x.Render(g_render, &camera);
-          
+        int i_item = -1;
+        for(int i=0; i<item_list.size(); i++)
+        {
+            SDL_Rect item_box = item_list[i].GetPosition();
+            if(SDL_HasIntersection(&player_box, &item_box))
+            {
+                i_item = i;
+                break;
+            }
+        }
+        if(i_item != -1) item_list.erase(item_list.begin()+i_item);
+        
         std::string quest_text = g_character.GetCurrentQuestInfo();
         SDL_Color textColor = {255, 255, 0};
 

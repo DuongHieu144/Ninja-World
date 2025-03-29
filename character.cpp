@@ -62,6 +62,7 @@ void Character::QuestReward()
         attack_damage_ +=10;
         max_hp_ += 200;
         max_mp_ += 100;
+        jump = -400;
     }
     else if(type == 2) 
     {

@@ -42,6 +42,8 @@ public:
     void UpdateState(int new_state);
     void UpdateAnimation();
 
+    
+
 private:
     Graphic player_;
     double pos_x_, pos_y_;

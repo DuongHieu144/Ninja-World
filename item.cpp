@@ -1,13 +1,5 @@
 #include "item.h"
 
-void Item::LoadImg(SDL_Renderer* renderer)
-{
-    bool tmp1 = item_hp.LoadImg("img/hp.png", renderer);
-    bool tmp2 = item_mp.LoadImg("img/mp.png", renderer);
-    bool tmp3 = item_nv1.LoadImg("img/vo_oc.png", renderer);
-    bool tmp4 = item_nv2.LoadImg("img/bi_kip.png", renderer);
-}
-
 void Item::Render(SDL_Renderer* renderer, SDL_Rect* camera)
 {
     if(id_ == 1) 

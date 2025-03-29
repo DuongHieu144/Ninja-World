@@ -24,7 +24,7 @@ void VillageChief::Interact(Character& player)
     {
         std::cout<<"Done";
         player.QuestReward();
-        player.NextQuest();
+     //   player.NextQuest();
     }
     else if(!quest->IsCompleted())
     {
