@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
         if(surface != nullptr)
         {
             SDL_Texture* texture = SDL_CreateTextureFromSurface(g_render, surface);
-            SDL_Rect text_rect = {20, 10, surface->w, surface->h}; 
+            SDL_Rect text_rect = {20, 200, surface->w, surface->h}; 
             SDL_RenderCopy(g_render, texture, NULL, &text_rect);
             SDL_FreeSurface(surface);
             SDL_DestroyTexture(texture);

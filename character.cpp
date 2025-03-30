@@ -48,6 +48,14 @@ Character::Character()
     idle_start_time_ = SDL_GetTicks();
     last_regen_time_ = SDL_GetTicks();
     is_idle_ = true;
+
+    hp_bar_width_ = 150;       // Chiều rộng thanh HP
+    hp_bar_height_ = 10;       // Chiều cao thanh HP
+    mp_bar_width_ = 150;       // Chiều rộng thanh MP
+    mp_bar_height_ = 10;       // Chiều cao thanh MP
+    hp_color_ = {0, 255, 0, 255}; // Xanh lá cho HP
+    mp_color_ = {0, 0, 255, 255}; // Xanh dương cho MP
+    bg_color_ = {255, 0, 0, 255}; // Đỏ cho nền
 }
 
 void Character::SetQuest(Quest* q)
@@ -366,7 +374,7 @@ void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data
 
 void Character::ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera) 
 {
-    std::string text = "X: " + std::to_string((int)pos_x_) + "  Y: " + std::to_string((int)pos_y_) + "  HP: "+ std::to_string(hp_) + "  MP: " + std::to_string(mp_);
+    std::string text = "X: " + std::to_string((int)pos_x_) + "  Y: " + std::to_string((int)pos_y_);
 
     SDL_Color textColor = {255, 255, 255}; 
 
@@ -496,6 +504,54 @@ void Character::UpdateRegeneration(Uint32 current_time) {
     }
 }
 
+void Character::RenderHPMPBars(SDL_Renderer* screen) {
+    const int OFFSET_X = 50; // Khoảng cách từ lề trái để đặt hình nhân vật
+    const int OFFSET_Y = 10; // Khoảng cách từ lề trên
+    const int BAR_SPACING = 5; // Khoảng cách giữa thanh HP và MP
+
+    SDL_Color textColor = {255, 255, 255, 255};
+
+    SDL_Surface* hpTextSurface = TTF_RenderText_Solid(g_font, "HP", textColor);
+    if (hpTextSurface) 
+    {
+        SDL_Texture* hpTextTexture = SDL_CreateTextureFromSurface(screen, hpTextSurface);
+        int textW = hpTextSurface->w;
+        SDL_Rect hpTextRect = {13, 3, textW, hpTextSurface->h};
+        SDL_RenderCopy(screen, hpTextTexture, nullptr, &hpTextRect);
+    }
+    SDL_Surface* mpTextSurface = TTF_RenderText_Solid(g_font, "MP", textColor);
+    if (mpTextSurface) {
+        SDL_Texture* mpTextTexture = SDL_CreateTextureFromSurface(screen, mpTextSurface);
+        int textW = mpTextSurface->w;
+        SDL_Rect mpTextRect = {13, 3 + hp_bar_height_ + BAR_SPACING, textW, mpTextSurface->h};
+        SDL_RenderCopy(screen, mpTextTexture, nullptr, &mpTextRect);
+    }
+
+    // Vẽ nền thanh HP (màu đỏ)
+    SDL_Rect hp_bg_rect = { OFFSET_X, OFFSET_Y, hp_bar_width_, hp_bar_height_ };
+    SDL_SetRenderDrawColor(screen, bg_color_.r, bg_color_.g, bg_color_.b, bg_color_.a);
+    SDL_RenderFillRect(screen, &hp_bg_rect);
+
+    // Vẽ thanh HP hiện tại (màu xanh lá)
+    float hp_ratio = (float)hp_ / max_hp_;
+    int current_hp_width = (int)(hp_bar_width_ * hp_ratio);
+    SDL_Rect hp_rect = { OFFSET_X, OFFSET_Y, current_hp_width, hp_bar_height_ };
+    SDL_SetRenderDrawColor(screen, hp_color_.r, hp_color_.g, hp_color_.b, hp_color_.a);
+    SDL_RenderFillRect(screen, &hp_rect);
+
+    // Vẽ nền thanh MP (màu đỏ)
+    SDL_Rect mp_bg_rect = { OFFSET_X, OFFSET_Y + hp_bar_height_ + BAR_SPACING, mp_bar_width_, mp_bar_height_ };
+    SDL_SetRenderDrawColor(screen, bg_color_.r, bg_color_.g, bg_color_.b, bg_color_.a);
+    SDL_RenderFillRect(screen, &mp_bg_rect);
+
+    // Vẽ thanh MP hiện tại (màu xanh dương)
+    float mp_ratio = (float)mp_ / max_mp_;
+    int current_mp_width = (int)(mp_bar_width_ * mp_ratio);
+    SDL_Rect mp_rect = { OFFSET_X, OFFSET_Y + hp_bar_height_ + BAR_SPACING, current_mp_width, mp_bar_height_ };
+    SDL_SetRenderDrawColor(screen, mp_color_.r, mp_color_.g, mp_color_.b, mp_color_.a);
+    SDL_RenderFillRect(screen, &mp_rect);
+}
+
 void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
 {
    
@@ -540,6 +596,7 @@ void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
             jump_right_texture.Render(des, &src_rect, &dst_rect);
         }
     }
+    RenderHPMPBars(des);
 
 }
 

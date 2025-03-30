@@ -50,8 +50,10 @@ public:
     void SetItemHp(int quantity) {item_hp = quantity;}
     void SetItemMp(int quantity) {item_mp = quantity;}
     int GetItemHp() const {return item_hp;}
-    int GetItemMp() const {return item_mp;} 
-
+    int GetItemMp() const {return item_mp;}
+    
+    void RenderHPMPBars(SDL_Renderer* screen);
+    
 private:
     Graphic player_;
     double pos_x_, pos_y_;
@@ -113,6 +115,15 @@ private:
     const int REGEN_RATE = 1000;   // 1 giây (1000ms) để hồi phục 1 lần
     const int HP_REGEN = 5;        // Số HP hồi mỗi giây
     const int MP_REGEN = 5;        // Số MP hồi mỗi giây
+
+    // Biến mới cho thanh HP và MP
+    int hp_bar_width_;    // Chiều rộng thanh HP
+    int hp_bar_height_;   // Chiều cao thanh HP
+    int mp_bar_width_;    // Chiều rộng thanh MP
+    int mp_bar_height_;   // Chiều cao thanh MP
+    SDL_Color hp_color_;  // Màu thanh HP (xanh lá)
+    SDL_Color mp_color_;  // Màu thanh MP (xanh dương)
+    SDL_Color bg_color_;  // Màu nền (đỏ)
 };
 
 #endif
