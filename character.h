@@ -27,7 +27,7 @@ public:
     int GetMP() const { return mp_; } 
 
     void SetQuest(Quest* q);
-    void DoQuest();
+    void DoQuest(int id);
     void QuestReward();
     void NextQuest();
     int GetQuestState() {return quest_stage_;}

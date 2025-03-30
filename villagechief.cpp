@@ -10,7 +10,6 @@ void VillageChief::Interact(Character& player)
     int quest_stage = player.GetQuestState();
     if(quest_stage > quests_.size())
     {
-        std::cout<<"Done all";
         return;
     }
 
@@ -18,16 +17,15 @@ void VillageChief::Interact(Character& player)
     if(player.GetCurrentQuest() == nullptr) 
     {
         player.SetQuest(quest);
+        std::cout<<quest_stage;
         return;
     }
     if(quest->IsCompleted())
     {
-        std::cout<<"Done";
         player.QuestReward();
-     //   player.NextQuest();
+        player.NextQuest();
     }
     else if(!quest->IsCompleted())
     {
-        std::cout<<"Do it";
     }
 }

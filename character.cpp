@@ -44,16 +44,11 @@ void Character::SetQuest(Quest* q)
     active_quest_ = q;
 }
 
-void Character::DoQuest()
+void Character::DoQuest(int id)
 {
-    if(active_quest_)
-    {
-        active_quest_->InCurrent();
-        if(active_quest_->IsCompleted())
-        {
-            NextQuest();
-        }
-    }
+    if(id == quest_stage_+1)
+        if(active_quest_)
+            active_quest_->InCurrent();
 }
 
 void Character::QuestReward()
@@ -91,11 +86,12 @@ std::string Character::GetCurrentQuestInfo()
 {
     if(active_quest_)
     {
-        return "Mission: " + active_quest_->GetDescription() + 
+        if(active_quest_->IsCompleted()) return "Quest: Meet the village chief to complete the quest";
+        return "Quest: " + active_quest_->GetDescription() + 
         " (" + std::to_string(active_quest_->GetProgress()) +
         "/" + std::to_string(active_quest_->GetGoal()) + ")";
     }
-    return "!Mission";
+    return "Receive a quest from the village chief";
 }
 
 void Character::TakeDamage(int damage)
@@ -415,7 +411,6 @@ void Character::PickUpItem(int id)
 {
     if(id == 1) item_hp++;
     if(id == 2) item_mp++;
-    std::cout<<"HP: "<<item_hp<<"   MP: "<<item_mp<<std::endl;
 }
 
 void Character::UseItemHp()

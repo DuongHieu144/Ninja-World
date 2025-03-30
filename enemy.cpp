@@ -55,7 +55,7 @@ void Enemy::TakeDamage(int damage, Character& player, std::vector<Item>& items)
         hp_ -= damage;
         if (hp_ <= 0)
         {
-            player.DoQuest();
+            player.DoQuest(id_);
             hp_ = 0;
             dead_ = true;
             death_time_ = SDL_GetTicks();
