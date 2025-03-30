@@ -14,6 +14,10 @@ Enemy::Enemy()
 
     dead_ = false;
     death_time_ = 0;
+
+    hp_bar_height_ = 3;
+    hp_color_ = {0, 255, 0, 255};
+    bg_color_ = {255, 0, 0, 255};
 }
 
 Enemy::~Enemy()
@@ -177,10 +181,30 @@ void Enemy::DropItem(std::vector<Item>& items)
 
 }
 
+void Enemy::RenderHPBar(SDL_Renderer* screen, SDL_Rect* camera) {
+    if (dead_ || hp_ <= 0) return;
+
+    int hp_bar_x = (int)pos_x_ - camera->x;
+    int hp_bar_y = (int)pos_y_ - camera->y - hp_bar_height_ - 2; 
+
+    SDL_Rect bg_rect = { hp_bar_x, hp_bar_y, w_, hp_bar_height_ };
+    SDL_SetRenderDrawColor(screen, bg_color_.r, bg_color_.g, bg_color_.b, bg_color_.a);
+    SDL_RenderFillRect(screen, &bg_rect);
+
+    float hp_ratio = (float)hp_ / max_hp_;
+    int current_hp_width = (int)(w_ * hp_ratio);
+
+    SDL_Rect hp_rect = { hp_bar_x, hp_bar_y, current_hp_width, hp_bar_height_ };
+    SDL_SetRenderDrawColor(screen, hp_color_.r, hp_color_.g, hp_color_.b, hp_color_.a);
+    SDL_RenderFillRect(screen, &hp_rect);
+}
+
 void Enemy::Render(SDL_Renderer* screen, SDL_Rect* camera) 
 {
     if(dead_) return;
     SDL_Rect render_pos = { (int)pos_x_ - camera->x, (int)pos_y_ - camera->y, w_, h_ };
     img_enemy_.SetRect(render_pos.x, render_pos.y);
     img_enemy_.Render(screen);
+
+    RenderHPBar(screen, camera);
 }

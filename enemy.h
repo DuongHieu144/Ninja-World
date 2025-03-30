@@ -24,6 +24,7 @@ public:
 
     bool LoadImg(std::string path, SDL_Renderer* screen);
     void Render(SDL_Renderer* screen, SDL_Rect* camera);
+    void RenderHPBar(SDL_Renderer* screen, SDL_Rect* camera);
     void Update(double delta_time, Character& player);
     SDL_Rect GetHitBox() const;
 
@@ -50,6 +51,10 @@ private:
     Uint32 death_time_;
 
     int w_, h_;
+  
+    int hp_bar_height_;   
+    SDL_Color hp_color_;  
+    SDL_Color bg_color_;
 
 };
 
