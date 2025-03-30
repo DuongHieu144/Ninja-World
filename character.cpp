@@ -20,6 +20,7 @@ Character::Character()
     player_.SetRect((int)pos_x_, (int)pos_y_);
     hp_ = max_hp_ = 500;
     mp_ = max_mp_ = 200;  
+    is_attacking_ = false;
     attack_damage_ = 20;
     attack_range_ = 40;
     last_attack_time_ = 0;
@@ -34,6 +35,12 @@ Character::Character()
     frame_height = 38;
     frame_delay = 100;
     last_frame_time = SDL_GetTicks();
+
+    frame_attack = 0;
+    frame_count_attack = 4;
+    frame_width_attack = 48;
+    frame_height_attack = 38;
+    last_frame_attack_time = SDL_GetTicks();
 
     item_hp = 0;
     item_mp = 0;
@@ -107,14 +114,16 @@ Character::~Character()
 
 bool Character::LoadImg(SDL_Renderer* renderer)
 {
-    bool tmp1, tmp2, tmp3, tmp4, tmp5, tmp6;
+    bool tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8;
     tmp1 = run_right_texture.LoadImg("img/run_right.png", renderer);
     tmp2 = run_left_texture.LoadImg("img/run_left.png", renderer);
     tmp3 = jump_right_texture.LoadImg("img/jump_right.png", renderer);
     tmp4 = jump_left_texture.LoadImg("img/jump_left.png", renderer);
     tmp5 = stand_right_texture.LoadImg("img/stand_right.png", renderer);
     tmp6 = stand_left_texture.LoadImg("img/stand_left.png", renderer);
-    return (tmp1 & tmp2 & tmp3 & tmp4 & tmp5 & tmp6);
+    tmp7 = attack_right_texture.LoadImg("img/attack_right.png", renderer);
+    tmp8 = attack_left_texture.LoadImg("img/attack_left.png", renderer);
+    return (tmp1 & tmp2 & tmp3 & tmp4 & tmp5 & tmp6 & tmp7 & tmp8);
 }
 
 bool Character::CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data)
@@ -179,7 +188,6 @@ void Character::Attack(std::vector<Enemy>& enemies, Character& player, std::vect
     Uint32 now = SDL_GetTicks();
     if (now - last_attack_time_ < attack_cooldown_) return; 
 
-    is_attacking_ = true;
     last_attack_time_ = now;
 
     SDL_Rect attack_box = GetAttackBox();
@@ -193,6 +201,8 @@ void Character::Attack(std::vector<Enemy>& enemies, Character& player, std::vect
             {
                 if(mp_>=5)
                 {
+                    is_attacking_ = true;
+                    frame_attack = 0;
                     enemy.TakeDamage(attack_damage_, player, item_list);
                     mp_-=5;
                 }
@@ -406,6 +416,20 @@ void Character::UpdateAnimation()
         last_frame_time = current_time;
     }
 }
+void Character::UpdateAttackAnimation()
+{
+    Uint32 current_time = SDL_GetTicks();
+    if(current_time > last_frame_attack_time + 80)
+    {
+        frame_attack ++;
+        if(frame_attack == frame_count_attack) 
+        {
+            frame_attack = 0;
+            is_attacking_ = false;
+        }
+        last_frame_attack_time = current_time;
+    }
+}
 
 void Character::PickUpItem(int id)
 {
@@ -435,9 +459,26 @@ void Character::UseItemMp()
 
 void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
 {
+   
     SDL_Rect src_rect = { frame * frame_width, 0, frame_width, frame_height };
     SDL_Rect dst_rect = { (int)pos_x_ - camera->x, (int)pos_y_ - camera->y, frame_width, frame_height };
-
+    if(is_attacking_) 
+    {
+        SDL_Rect src_rect_attack = { frame_attack * 48, 0, 48, 38 };
+        SDL_Rect dst_rect_attack = { (int)pos_x_ - camera->x, (int)pos_y_ - camera->y, 48, 38 };
+        if(is_right_) 
+        {
+            SDL_Rect dst_rect_attack = { (int)pos_x_ - camera->x, (int)pos_y_ - camera->y, 48, 38 };
+            attack_right_texture.Render(des, &src_rect_attack, &dst_rect_attack);
+        }
+        else 
+        {
+            SDL_Rect dst_rect_attack = { (int)pos_x_ - camera->x - 27, (int)pos_y_ - camera->y, 48, 38 };
+            attack_left_texture.Render(des, &src_rect_attack, &dst_rect_attack);
+        }
+        if(frame == 3) is_attacking_ = false;
+    }
+    else
     if (!is_right_) {
         if (state == 0) {
             stand_left_texture.Render(des, &src_rect, &dst_rect);

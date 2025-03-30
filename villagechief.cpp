@@ -17,7 +17,6 @@ void VillageChief::Interact(Character& player)
     if(player.GetCurrentQuest() == nullptr) 
     {
         player.SetQuest(quest);
-        std::cout<<quest_stage;
         return;
     }
     if(quest->IsCompleted())

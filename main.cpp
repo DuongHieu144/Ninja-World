@@ -112,6 +112,7 @@ int main(int argc, char* argv[])
             }
         }   
         g_character.UpdateAnimation();
+        g_character.UpdateAttackAnimation();
         g_character.Move(delta_time, map_data);
         for(auto& x : enemy_list)
         {

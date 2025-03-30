@@ -41,6 +41,7 @@ public:
 
     void UpdateState(int new_state);
     void UpdateAnimation();
+    void UpdateAttackAnimation();
 
     void PickUpItem(int id);
     void UseItemHp();
@@ -82,12 +83,20 @@ private:
     Uint32 last_frame_time;
     int frame_delay;
 
+    int frame_attack;
+    int frame_count_attack;
+    int frame_width_attack;
+    int frame_height_attack;
+    Uint32 last_frame_attack_time;
+
     Graphic run_right_texture;
     Graphic run_left_texture;
     Graphic jump_right_texture;
     Graphic jump_left_texture;
     Graphic stand_right_texture;
     Graphic stand_left_texture;
+    Graphic attack_right_texture;
+    Graphic attack_left_texture;
 
     int item_hp;
     int item_mp;
