@@ -42,10 +42,15 @@ public:
     void UpdateState(int new_state);
     void UpdateAnimation();
     void UpdateAttackAnimation();
+    void UpdateRegeneration(Uint32 current_time);
 
     void PickUpItem(int id);
     void UseItemHp();
     void UseItemMp();
+    void SetItemHp(int quantity) {item_hp = quantity;}
+    void SetItemMp(int quantity) {item_mp = quantity;}
+    int GetItemHp() const {return item_hp;}
+    int GetItemMp() const {return item_mp;} 
 
 private:
     Graphic player_;
@@ -100,6 +105,14 @@ private:
 
     int item_hp;
     int item_mp;
+
+    Uint32 idle_start_time_;    // Thời gian bắt đầu đứng im
+    Uint32 last_regen_time_;    // Thời gian hồi phục cuối cùng
+    bool is_idle_;              // Trạng thái đứng im
+    const int REGEN_DELAY = 5000; // 10 giây (10000ms) để bắt đầu hồi phục
+    const int REGEN_RATE = 1000;   // 1 giây (1000ms) để hồi phục 1 lần
+    const int HP_REGEN = 5;        // Số HP hồi mỗi giây
+    const int MP_REGEN = 5;        // Số MP hồi mỗi giây
 };
 
 #endif

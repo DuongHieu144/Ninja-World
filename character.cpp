@@ -44,6 +44,10 @@ Character::Character()
 
     item_hp = 0;
     item_mp = 0;
+
+    idle_start_time_ = SDL_GetTicks();
+    last_regen_time_ = SDL_GetTicks();
+    is_idle_ = true;
 }
 
 void Character::SetQuest(Quest* q)
@@ -356,6 +360,8 @@ void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data
     }
     
     player_.SetRect((int)pos_x_, (int)pos_y_);
+
+    UpdateRegeneration(SDL_GetTicks());
 }
 
 void Character::ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera) 
@@ -419,7 +425,7 @@ void Character::UpdateAnimation()
 void Character::UpdateAttackAnimation()
 {
     Uint32 current_time = SDL_GetTicks();
-    if(current_time > last_frame_attack_time + 80)
+    if(current_time > last_frame_attack_time + 50)
     {
         frame_attack ++;
         if(frame_attack == frame_count_attack) 
@@ -454,6 +460,39 @@ void Character::UseItemMp()
         item_mp--;
         if(mp_ + 200 >= max_mp_) mp_=max_mp_;
         else mp_+=200;
+    }
+}
+
+void Character::UpdateRegeneration(Uint32 current_time) {
+    // Kiểm tra trạng thái đứng im
+    if (vel_x_ == 0 && vel_y_ == 0 && !is_attacking_ && !flag_left_ && !flag_right_ && !flag_up_) {
+        if (!is_idle_) {
+            // Bắt đầu đứng im
+            is_idle_ = true;
+            idle_start_time_ = current_time;
+        }
+    } else {
+        // Không đứng im nữa, reset thời gian
+        is_idle_ = false;
+        idle_start_time_ = current_time;
+        return;
+    }
+
+    // Nếu đứng im đủ 10 giây, bắt đầu hồi phục
+    if (is_idle_ && (current_time - idle_start_time_ >= REGEN_DELAY)) {
+        if (current_time - last_regen_time_ >= REGEN_RATE) {
+            // Hồi phục HP
+            if (hp_ < max_hp_) {
+                hp_ += HP_REGEN;
+                if (hp_ > max_hp_) hp_ = max_hp_;
+            }
+            // Hồi phục MP
+            if (mp_ < max_mp_) {
+                mp_ += MP_REGEN;
+                if (mp_ > max_mp_) mp_ = max_mp_;
+            }
+            last_regen_time_ = current_time; // Cập nhật thời gian hồi phục cuối
+        }
     }
 }
 
