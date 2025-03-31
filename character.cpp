@@ -385,9 +385,9 @@ void Character::Move(double delta_time, std::vector<std::vector<int> >& map_data
     UpdateRegeneration(SDL_GetTicks());
 }
 
-void Character::ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera) 
+void Character::ShowPotion(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera) 
 {
-    std::string text = "X: " + std::to_string((int)pos_x_) + "  Y: " + std::to_string((int)pos_y_);
+    std::string text = "HP Potion: " + std::to_string(item_hp) + "  MP Potion: " + std::to_string(item_mp);
 
     SDL_Color textColor = {255, 255, 255}; 
 

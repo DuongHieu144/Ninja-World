@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
         SDL_RenderCopy(g_render, g_background.GetObject(), &src_rect, &dst_rect);
 
         g_character.Render(g_render, &camera);
-        g_character.ShowPosition(g_render, g_font, &camera);
+        g_character.ShowPotion(g_render, g_font, &camera);
         for(auto&x : enemy_list) x.Render(g_render, &camera);
         for(auto& x : item_list) x.Render(g_render, &camera);
         int i_item = -1;

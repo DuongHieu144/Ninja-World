@@ -16,8 +16,6 @@ class Item
         int id_; 
         int pos_x_, pos_y_;
         int width_ = 16, height_ = 16; 
-        Graphic item_hp;
-        Graphic item_mp;
     };
     
 #endif

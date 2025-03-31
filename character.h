@@ -17,7 +17,7 @@ public:
     void HandleInput(SDL_Event& event, std::vector<Enemy>& enemies, Character& player, std::vector<Item>& items);
     void Move(double delta_time, std::vector<std::vector<int> >& map_data);
     
-    void ShowPosition(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera);
+    void ShowPotion(SDL_Renderer* renderer, TTF_Font* font, SDL_Rect* camera);
     bool CheckCollision(int x, int y, std::vector<std::vector<int> >& map_data);
     
     void TakeDamage(int damage);
