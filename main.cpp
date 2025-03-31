@@ -80,6 +80,7 @@ bool LoadResources()
     if (!g_background_music) return false;
     g_attack_sound = Mix_LoadWAV("audio/attack_sound.wav");
     if (!g_attack_sound) return false;
+    Enemy::LoadBloodSplashTexture(g_render);
     return true;
 }
 

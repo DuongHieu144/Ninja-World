@@ -31,6 +31,8 @@ public:
     void Respawn();
     void DropItem(std::vector<Item>& items);
 
+    static void LoadBloodSplashTexture(SDL_Renderer* renderer);
+
 private:
     Graphic* img_enemy_;
     double pos_x_;
@@ -58,6 +60,11 @@ private:
 
     int detection_range_;
 
+    // Biến cho hiệu ứng tóe máu
+    static Graphic blood_splash_texture_; // Texture tóe máu dùng chung cho tất cả Enemy
+    Uint32 blood_splash_start_time_;      // Thời gian bắt đầu hiệu ứng
+    bool show_blood_splash_;              // Trạng thái hiển thị hiệu ứng
+    const Uint32 BLOOD_SPLASH_DURATION = 200; // Thời gian hiển thị (ms), ví dụ: 200ms
 };
 
 void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list, Graphic* enemy_textures);

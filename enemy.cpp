@@ -1,6 +1,8 @@
 #include "enemy.h"
 #include "character.h"
 
+Graphic Enemy::blood_splash_texture_;
+
 Enemy::Enemy()
 {
     img_enemy_ = nullptr;
@@ -20,6 +22,15 @@ Enemy::Enemy()
     bg_color_ = {255, 0, 0, 255};
 
     detection_range_ = 200;
+
+    // Khởi tạo biến hiệu ứng tóe máu
+    show_blood_splash_ = false;
+    blood_splash_start_time_ = 0;
+}
+
+void Enemy::LoadBloodSplashTexture(SDL_Renderer* renderer)
+{
+    blood_splash_texture_.LoadImg("img/blood_splash.png", renderer);
 }
 
 Enemy::~Enemy()
@@ -59,6 +70,11 @@ void Enemy::TakeDamage(int damage, Character& player, std::vector<Item>& items)
     if (!dead_)
     {
         hp_ -= damage;
+        if (hp_ > 0) // Chỉ hiển thị hiệu ứng nếu quái chưa chết
+        {
+            show_blood_splash_ = true;
+            blood_splash_start_time_ = SDL_GetTicks();
+        }
         if (hp_ <= 0)
         {
             player.DoQuest(id_);
@@ -161,6 +177,15 @@ void Enemy::Update(double delta_time, Character& player)
             player.TakeDamage(attack_damage_); 
         }
     }
+
+    if (show_blood_splash_)
+    {
+        Uint32 current_time = SDL_GetTicks();
+        if (current_time - blood_splash_start_time_ >= BLOOD_SPLASH_DURATION)
+        {
+            show_blood_splash_ = false; // Tắt hiệu ứng sau khi hết thời gian
+        }
+    }
 }
 
 void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list, Graphic* enemy_textures)
@@ -243,5 +268,12 @@ void Enemy::Render(SDL_Renderer* screen, SDL_Rect* camera)
     // Vẽ ảnh với khả năng lật
     SDL_RenderCopyEx(screen, img_enemy_->GetObject(), nullptr, &render_pos, 0.0, nullptr, flip);
 
+    // Render hiệu ứng tóe máu nếu đang bật
+    if (show_blood_splash_)
+    {
+        SDL_Rect blood_pos = { (int)pos_x_ - camera->x, (int)pos_y_ - camera->y, 32, 32 }; // Kích thước tùy chỉnh
+        blood_splash_texture_.Render(screen, nullptr, &blood_pos);
+    }
+    
     RenderHPBar(screen, camera);
 }
