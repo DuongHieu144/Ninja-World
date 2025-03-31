@@ -570,6 +570,73 @@ void Character::RenderHPMPBars(SDL_Renderer* screen) {
     SDL_RenderFillRect(screen, &mp_rect);
 }
 
+void Character::Reset()
+{
+    // Giải phóng các texture cũ
+    run_right_texture.Free();
+    run_left_texture.Free();
+    jump_right_texture.Free();
+    jump_left_texture.Free();
+    stand_right_texture.Free();
+    stand_left_texture.Free();
+    attack_right_texture.Free();
+    attack_left_texture.Free();
+    player_.Free();
+
+    // Đặt lại các giá trị ban đầu
+    pos_x_ = 90;
+    pos_y_ = 418;
+    vel_x_ = 0;
+    vel_y_ = 0;
+    gravity_y = 1000.0;
+    gravity_x = 600.0;
+    jump = -330.0;
+    on_ground_ = false;
+    flag_right_ = false;
+    flag_left_ = false;
+    flag_up_ = false;
+    is_right_ = false;
+    player_.SetRect((int)pos_x_, (int)pos_y_);
+    hp_ = max_hp_ = 500;
+    mp_ = max_mp_ = 200;  
+    is_attacking_ = false;
+    attack_damage_ = 20;
+    attack_range_ = 40;
+    last_attack_time_ = 0;
+    attack_cooldown_ = 500; 
+
+    quest_stage_ = 0;
+    active_quest_ = nullptr;
+
+    state = 0;
+    frame = 0;
+    frame_width = 21;  
+    frame_height = 38;
+    frame_delay = 100;
+    last_frame_time = SDL_GetTicks();
+
+    frame_attack = 0;
+    frame_count_attack = 4;
+    frame_width_attack = 48;
+    frame_height_attack = 38;
+    last_frame_attack_time = SDL_GetTicks();
+
+    item_hp = 0;
+    item_mp = 0;
+
+    idle_start_time_ = SDL_GetTicks();
+    last_regen_time_ = SDL_GetTicks();
+    is_idle_ = true;
+
+    hp_bar_width_ = 150;       
+    hp_bar_height_ = 10;       
+    mp_bar_width_ = 150;      
+    mp_bar_height_ = 10;       
+    hp_color_ = {0, 255, 0, 255}; 
+    mp_color_ = {0, 0, 255, 255}; 
+    bg_color_ = {255, 0, 0, 255}; 
+}
+
 void Character::Render(SDL_Renderer* des, SDL_Rect* camera)
 {
    

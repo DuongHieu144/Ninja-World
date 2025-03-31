@@ -54,6 +54,7 @@ public:
     int GetState() const {return state;}
     
     void RenderHPMPBars(SDL_Renderer* screen);
+    void Reset();
     
 private:
     Graphic player_;
