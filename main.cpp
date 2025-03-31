@@ -303,7 +303,7 @@ int main(int argc, char* argv[])
                 SDL_RenderClear(g_render);
                 winner_background.Render(g_render);
                 SDL_RenderPresent(g_render);
-                if (SDL_GetTicks() - state_change_time >= 60000) {
+                if (SDL_GetTicks() - state_change_time >= 10000) {
                     game_state = MENU;
                 }
                 break;
