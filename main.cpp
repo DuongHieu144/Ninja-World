@@ -31,8 +31,6 @@ int mouse_x = 0, mouse_y = 0;
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
 Graphic enemy_textures[5];
-Graphic item_hp;
-Graphic item_mp;
 
 bool InitData() 
 {
