@@ -230,6 +230,7 @@ void Character::Attack(std::vector<Enemy>& enemies, Character& player, std::vect
                     frame_attack = 0;
                     enemy.TakeDamage(attack_damage_, player, item_list);
                     mp_-=5;
+                    Mix_PlayChannel(-1, g_attack_sound, 0);
                 }
             }
         }

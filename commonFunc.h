@@ -15,6 +15,9 @@ extern SDL_Renderer* g_render;
 extern SDL_Event g_event;
 extern TTF_Font* g_font;
 
+extern Mix_Music* g_background_music;  // Nhạc nền
+extern Mix_Chunk* g_attack_sound; // Âm thanh vũ khí
+
 const int SCREEN_WIDTH = 960;
 const int SCREEN_HEIGHT = 540;
 

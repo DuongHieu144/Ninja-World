@@ -37,6 +37,9 @@ Button new_game_button;
 Graphic game_over_background;
 Graphic winner_background;
 
+Mix_Music* g_background_music = NULL;
+Mix_Chunk* g_attack_sound = NULL;
+
 enum GameState 
 {
     MENU,
@@ -47,7 +50,7 @@ enum GameState
 
 bool InitData() 
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) return false;
+    if (SDL_Init(SDL_INIT_VIDEO) | SDL_INIT_AUDIO < 0) return false;
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     g_window = SDL_CreateWindow("Ninja Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (!g_window) return false;
@@ -58,6 +61,7 @@ bool InitData()
     if (TTF_Init() == -1) return false;
     g_font = TTF_OpenFont("arial.ttf", 20);
     if (!g_font) return false;
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) return false;
     return true;
 }
 
@@ -72,6 +76,10 @@ bool LoadResources()
     if (!winner_background.LoadImg("img/winner_background.png", g_render)) return false;
     LoadMapFromFile("map.txt", map_data);
     LoadEnemyFromFile("enemy.txt", enemy_list, enemy_textures);
+    g_background_music = Mix_LoadMUS("audio/background_music.mp3");
+    if (!g_background_music) return false;
+    g_attack_sound = Mix_LoadWAV("audio/attack_sound.wav");
+    if (!g_attack_sound) return false;
     return true;
 }
 
@@ -87,16 +95,25 @@ void UpdateCamera()
     if (camera.y + camera.h > map_height) camera.y = map_height - camera.h;
 }
 
-void Close() 
-{
+void Close() {
     g_background.Free();
     g_character.~Character(); 
     for (int i = 0; i < 5; i++) 
+    {
         enemy_textures[i].Free();
+    }
     main_menu_background.Free();
     new_game_button.~Button();
     game_over_background.Free();
     winner_background.Free();
+
+    // Giải phóng âm thanh
+    Mix_FreeMusic(g_background_music);
+    Mix_FreeChunk(g_attack_sound);
+    g_background_music = NULL;
+    g_attack_sound = NULL;
+    Mix_Quit();
+
     SDL_DestroyRenderer(g_render);
     SDL_DestroyWindow(g_window);
     TTF_CloseFont(g_font);
@@ -173,6 +190,9 @@ int main(int argc, char* argv[])
                     if (HandleMenuInput(g_event)) {
                         game_state = PLAYING;
                         ResetGame();
+                        Mix_PlayMusic(g_background_music, -1);
+                        Mix_VolumeMusic(64);
+                        Mix_VolumeChunk(g_attack_sound, 124);
                     }
                     break;
                 case PLAYING:
@@ -254,10 +274,12 @@ int main(int argc, char* argv[])
                 if (g_character.GetHP() <= 0) {
                     game_state = GAME_OVER;
                     state_change_time = SDL_GetTicks();
+                    Mix_PauseMusic();
                 }
                 if (g_character.GetQuestState() == 5 && quest5.IsCompleted()) {
                     game_state = WINNER;
                     state_change_time = SDL_GetTicks();
+                    Mix_PauseMusic();
                 }
 
                 SDL_RenderPresent(g_render);
