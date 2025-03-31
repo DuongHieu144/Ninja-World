@@ -233,10 +233,15 @@ void Enemy::RenderHPBar(SDL_Renderer* screen, SDL_Rect* camera) {
 
 void Enemy::Render(SDL_Renderer* screen, SDL_Rect* camera) 
 {
-    if(dead_) return;
+    if (dead_) return;
+
     SDL_Rect render_pos = { (int)pos_x_ - camera->x, (int)pos_y_ - camera->y, w_, h_ };
-    img_enemy_->SetRect(render_pos.x, render_pos.y);
-    img_enemy_->Render(screen);
+
+    // Xác định hướng lật dựa trên moving_right_
+    SDL_RendererFlip flip = (moving_right_) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+
+    // Vẽ ảnh với khả năng lật
+    SDL_RenderCopyEx(screen, img_enemy_->GetObject(), nullptr, &render_pos, 0.0, nullptr, flip);
 
     RenderHPBar(screen, camera);
 }

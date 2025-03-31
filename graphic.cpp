@@ -35,18 +35,17 @@ bool Graphic::LoadImg(std::string path, SDL_Renderer* screen)
     return p_object_ !=NULL;
 }
 
-void Graphic::Render(SDL_Renderer* des, const SDL_Rect* clip, const SDL_Rect* dst)
+void Graphic::Render(SDL_Renderer* des, const SDL_Rect* clip, const SDL_Rect* dst, SDL_RendererFlip flip)
 {
-    if(dst==NULL)
+    if (dst == NULL)
     {
         SDL_Rect renderquad = {rect_.x, rect_.y, rect_.w, rect_.h};
-        SDL_RenderCopy(des, p_object_, clip, &renderquad);
+        SDL_RenderCopyEx(des, p_object_, clip, &renderquad, 0.0, nullptr, flip);
     }
     else 
     {
-        SDL_RenderCopy(des, p_object_, clip, dst);
+        SDL_RenderCopyEx(des, p_object_, clip, dst, 0.0, nullptr, flip);
     }
-
 }
 
 void Graphic::Free()
