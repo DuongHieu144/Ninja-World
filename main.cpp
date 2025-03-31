@@ -30,6 +30,10 @@ int mouse_x = 0, mouse_y = 0;
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
+Graphic enemy_textures[5];
+Graphic item_hp;
+Graphic item_mp;
+
 bool InitData() 
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) return false;
@@ -50,16 +54,12 @@ bool LoadResources()
     if (!g_background.LoadImg("img/map.png", g_render)) return false;
     if (!g_character.LoadImg(g_render)) return false;
     LoadMapFromFile("map.txt", map_data);
+    LoadEnemyFromFile("enemy.txt", enemy_list, enemy_textures);
     return true;
 }
 
-bool LoadEnemy()
+void UpdateCamera() 
 {
-    LoadEnemyFromFile("enemy.txt", enemy_list);
-    return true;
-}
-
-void UpdateCamera() {
     SDL_Rect player_rect = g_character.GetRect();
     camera.x = player_rect.x - SCREEN_WIDTH / 2;
     camera.y = player_rect.y - SCREEN_HEIGHT / 2;
@@ -73,6 +73,10 @@ void UpdateCamera() {
 void Close() {
     g_background.Free();
     g_character.~Character(); 
+    for (int i = 0; i < 5; i++) 
+    {
+        enemy_textures[i].Free(); // Giải phóng texture chung
+    }
     SDL_DestroyRenderer(g_render);
     SDL_DestroyWindow(g_window);
     TTF_CloseFont(g_font);
@@ -87,7 +91,6 @@ int main(int argc, char* argv[])
 {
     if (!InitData()) return -1;
     if (!LoadResources()) return -1;
-    if (!LoadEnemy()) return -1;
     bool is_quit = false;
 
     Uint64 now = SDL_GetPerformanceCounter();

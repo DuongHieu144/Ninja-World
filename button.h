@@ -8,6 +8,7 @@ class Button
 {
 public:
     Button();
+    ~Button();
     void LoadImg(const std::string& path, SDL_Renderer* renderer); 
     void SetPosition(int x, int y);
     void Render(SDL_Renderer* renderer);

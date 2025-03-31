@@ -531,13 +531,18 @@ void Character::RenderHPMPBars(SDL_Renderer* screen) {
         int textW = hpTextSurface->w;
         SDL_Rect hpTextRect = {13, 3, textW, hpTextSurface->h};
         SDL_RenderCopy(screen, hpTextTexture, nullptr, &hpTextRect);
+        SDL_FreeSurface(hpTextSurface);
+        SDL_DestroyTexture(hpTextTexture);
     }
+
     SDL_Surface* mpTextSurface = TTF_RenderText_Solid(g_font, "MP", textColor);
     if (mpTextSurface) {
         SDL_Texture* mpTextTexture = SDL_CreateTextureFromSurface(screen, mpTextSurface);
         int textW = mpTextSurface->w;
         SDL_Rect mpTextRect = {13, 3 + hp_bar_height_ + BAR_SPACING, textW, mpTextSurface->h};
         SDL_RenderCopy(screen, mpTextTexture, nullptr, &mpTextRect);
+        SDL_FreeSurface(mpTextSurface);
+        SDL_DestroyTexture(mpTextTexture);
     }
 
     // Vẽ nền thanh HP (màu đỏ)

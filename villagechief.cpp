@@ -1,11 +1,7 @@
 #include "villagechief.h"
 
-VillageChief::VillageChief(SDL_Renderer* renderer) {
-    // Tải texture cho các nút (kích thước 64x64)
-    get_quest_button_.LoadImg("img/get_quest_button.png", renderer);
-    cancel_button_.LoadImg("img/cancel_button.png", renderer);
-    complete_button_.LoadImg("img/complete_button.png", renderer);
-
+VillageChief::VillageChief(SDL_Renderer* renderer) 
+{
     // Đặt vị trí cho các nút
     get_quest_button_.SetPosition(SCREEN_WIDTH / 2 - 72, SCREEN_HEIGHT / 2 + 150); // Cách nhau 16px
     cancel_button_.SetPosition(SCREEN_WIDTH / 2 + 16, SCREEN_HEIGHT / 2 + 150);
@@ -70,4 +66,7 @@ void VillageChief::RenderMenu(SDL_Renderer* renderer, Character& player) {
         // Hiển thị nút "Complete"
         complete_button_.Render(renderer);
     }
+    get_quest_button_.~Button();
+    cancel_button_.~Button();
+    complete_button_.~Button();
 }

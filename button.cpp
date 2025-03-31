@@ -5,6 +5,8 @@ Button::Button()
     rect_ = {0, 0, 64, 64};
 }
 
+Button::~Button() { texture_.Free(); }
+
 void Button::LoadImg(const std::string& path, SDL_Renderer* renderer) 
 {
     texture_.LoadImg(path.c_str(), renderer);

@@ -22,7 +22,7 @@ public:
     void SetPatrolRange(int left, int right);
     bool IsDead() const;
 
-    bool LoadImg(std::string path, SDL_Renderer* screen);
+    void SetTexture(Graphic* texture);
     void Render(SDL_Renderer* screen, SDL_Rect* camera);
     void RenderHPBar(SDL_Renderer* screen, SDL_Rect* camera);
     void Update(double delta_time, Character& player);
@@ -32,7 +32,7 @@ public:
     void DropItem(std::vector<Item>& items);
 
 private:
-    Graphic img_enemy_;
+    Graphic* img_enemy_;
     double pos_x_;
     double pos_y_;
     double vel_x_;
@@ -56,8 +56,10 @@ private:
     SDL_Color hp_color_;  
     SDL_Color bg_color_;
 
+    int detection_range_;
+
 };
 
-void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list);
+void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list, Graphic* enemy_textures);
 
 #endif

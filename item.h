@@ -18,8 +18,6 @@ class Item
         int width_ = 16, height_ = 16; 
         Graphic item_hp;
         Graphic item_mp;
-        Graphic item_nv1;
-        Graphic item_nv2;
     };
     
 #endif
