@@ -183,7 +183,7 @@ void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list, Graphic
     enemy_textures[1].LoadImg("img/ocma.png", g_render);
     enemy_textures[2].LoadImg("img/khi.png", g_render);
     enemy_textures[3].LoadImg("img/oc.png", g_render);
-    enemy_textures[4].LoadImg("img/heo.png", g_render);
+    enemy_textures[4].LoadImg("img/boss.png", g_render);
     int c = -1;
     for (int i = 1; i <= 5; i++) // 5 thucthao
         enemy_list[++c].SetTexture(&enemy_textures[0]);
@@ -193,7 +193,7 @@ void LoadEnemyFromFile(std::string path, std::vector<Enemy>& enemy_list, Graphic
         enemy_list[++c].SetTexture(&enemy_textures[2]);
     for (int i = 1; i <= 4; i++) // 4 oc
         enemy_list[++c].SetTexture(&enemy_textures[3]);
-    enemy_list[++c].SetTexture(&enemy_textures[4]); // 1 heo
+    enemy_list[++c].SetTexture(&enemy_textures[4]); // 1 boss
 }
 
 void Enemy::DropItem(std::vector<Item>& items)
@@ -208,7 +208,7 @@ void Enemy::DropItem(std::vector<Item>& items)
     {
         new_item.SetId(2);
     }
-    new_item.SetPosition(pos_x_, pos_y_);
+    new_item.SetPosition(pos_x_, pos_y_ + h_ - 16);
     items.push_back(new_item);
 
 }
