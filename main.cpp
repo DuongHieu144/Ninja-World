@@ -15,7 +15,7 @@ Graphic g_background;
 Character g_character; 
 std::vector<std::vector<int> > map_data;
 std::vector<Enemy> enemy_list;
-VillageChief village_npc;
+VillageChief village_npc(g_render);
 std::vector<Item> item_list;
 
 Quest quest1("Kill 3 roses", 3, 1);  
@@ -24,6 +24,9 @@ Quest quest3("Kill 7 monkeys", 7, 3);
 Quest quest4("Kill 10 snails", 10, 4);
 Quest quest5("Collect martial arts secrets from the boss", 1, 5);
 
+bool show_menu = false;
+bool menu_active = false;
+int mouse_x = 0, mouse_y = 0;
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
@@ -103,13 +106,9 @@ int main(int argc, char* argv[])
             {
                 is_quit = true;
             }
-            g_character.HandleInput(g_event, enemy_list, g_character, item_list);
-            if (g_event.type == SDL_KEYDOWN && g_event.key.keysym.sym == SDLK_RETURN)
-            {
-                SDL_Rect npc_box = {300, 200, 300, 300};
-                if (SDL_HasIntersection(&player_box, &npc_box)) 
-                    village_npc.Interact(g_character);
-            }
+            SDL_GetMouseState(&mouse_x, &mouse_y);
+            if (!menu_active) g_character.HandleInput(g_event, enemy_list, g_character, item_list);
+            village_npc.Interact(g_character, g_event, show_menu, menu_active, player_box);
         }   
         g_character.UpdateAnimation();
         g_character.UpdateAttackAnimation();
@@ -157,6 +156,10 @@ int main(int argc, char* argv[])
             SDL_RenderCopy(g_render, texture, NULL, &text_rect);
             SDL_FreeSurface(surface);
             SDL_DestroyTexture(texture);
+        }
+        if (show_menu) 
+        {
+            village_npc.RenderMenu(g_render, g_character);
         }
         SDL_RenderPresent(g_render);
     }

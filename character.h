@@ -51,6 +51,7 @@ public:
     void SetItemMp(int quantity) {item_mp = quantity;}
     int GetItemHp() const {return item_hp;}
     int GetItemMp() const {return item_mp;}
+    int GetState() const {return state;}
     
     void RenderHPMPBars(SDL_Renderer* screen);
     

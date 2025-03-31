@@ -49,13 +49,13 @@ Character::Character()
     last_regen_time_ = SDL_GetTicks();
     is_idle_ = true;
 
-    hp_bar_width_ = 150;       // Chiều rộng thanh HP
-    hp_bar_height_ = 10;       // Chiều cao thanh HP
-    mp_bar_width_ = 150;       // Chiều rộng thanh MP
-    mp_bar_height_ = 10;       // Chiều cao thanh MP
-    hp_color_ = {0, 255, 0, 255}; // Xanh lá cho HP
-    mp_color_ = {0, 0, 255, 255}; // Xanh dương cho MP
-    bg_color_ = {255, 0, 0, 255}; // Đỏ cho nền
+    hp_bar_width_ = 150;       
+    hp_bar_height_ = 10;       
+    mp_bar_width_ = 150;      
+    mp_bar_height_ = 10;       
+    hp_color_ = {0, 255, 0, 255}; 
+    mp_color_ = {0, 0, 255, 255}; 
+    bg_color_ = {255, 0, 0, 255}; 
 }
 
 void Character::SetQuest(Quest* q)
@@ -93,6 +93,19 @@ void Character::QuestReward()
         max_mp_ += 50;
         attack_damage_ +=20;
     }
+    else if(type == 4)
+    {
+        max_hp_ += 200;
+        max_mp_ += 10;
+        attack_damage_ +=20;
+    }
+    else if(type == 5)
+    {
+        max_hp_ += 200;
+        max_mp_ += 10;
+        attack_damage_ +=20;
+    }
+
 }
 
 void Character::NextQuest()
