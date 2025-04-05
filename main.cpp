@@ -23,7 +23,7 @@ Quest quest1("Kill 3 roses", 3, 1);
 Quest quest2("Kill 5 purple snails", 5, 2);   
 Quest quest3("Kill 7 monkeys", 7, 3);  
 Quest quest4("Kill 10 snails", 10, 4);
-Quest quest5("Collect martial arts secrets from the boss", 1, 5);
+Quest quest5("Kill the boss", 1, 5);
 
 bool show_menu = false;
 bool menu_active = false;

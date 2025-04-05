@@ -10,8 +10,6 @@ Button::~Button() { texture_.Free(); }
 void Button::LoadImg(const std::string& path, SDL_Renderer* renderer) 
 {
     texture_.LoadImg(path.c_str(), renderer);
-    rect_.w = 64; 
-    rect_.h = 64;
 }
 
 void Button::SetPosition(int x, int y) 

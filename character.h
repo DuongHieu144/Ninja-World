@@ -60,8 +60,7 @@ private:
     Graphic player_;
     double pos_x_, pos_y_;
     double vel_x_, vel_y_;
-    double gravity_y;
-    double gravity_x;
+    double gravity_y, gravity_x;
     double jump;
     const double SPEED = 150.0;
     double target_speed_x_ = 0.0;
@@ -113,10 +112,10 @@ private:
     Uint32 idle_start_time_;    // Thời gian bắt đầu đứng im
     Uint32 last_regen_time_;    // Thời gian hồi phục cuối cùng
     bool is_idle_;              // Trạng thái đứng im
-    const int REGEN_DELAY = 5000; // 10 giây (10000ms) để bắt đầu hồi phục
-    const int REGEN_RATE = 1000;   // 1 giây (1000ms) để hồi phục 1 lần
-    const int HP_REGEN = 5;        // Số HP hồi mỗi giây
-    const int MP_REGEN = 5;        // Số MP hồi mỗi giây
+    const int REGEN_DELAY = 5000; // 5 giây (5000ms) để bắt đầu hồi phục
+    const int REGEN_RATE = 500;   // 1 giây (1000ms) để hồi phục 2 lần
+    const int HP_REGEN = 10;        // Số HP hồi mỗi giây
+    const int MP_REGEN = 10;        // Số MP hồi mỗi giây
 
     // Biến mới cho thanh HP và MP
     int hp_bar_width_;    // Chiều rộng thanh HP

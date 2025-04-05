@@ -20,7 +20,7 @@ private:
     Button get_quest_button_;
     Button cancel_button_;
     Button complete_button_;
-    SDL_Rect npc_box_ = {300, 200, 300, 300};
+    SDL_Rect npc_box_ = {300, 200, 300, 150};
 };
 
 #endif
