@@ -11,7 +11,7 @@ class VillageChief
 public:
 VillageChief(SDL_Renderer* renderer);
 void SetQuests(std::vector<Quest*> quest_list);
-void Interact(Character& player, SDL_Event& event, bool& show_menu, bool& menu_active, SDL_Rect& player_box);
+void Interact(Character& player, SDL_Event& event, bool& show_menu, SDL_Rect& player_box);
 void RenderMenu(SDL_Renderer* renderer, Character& player);
 
 private:

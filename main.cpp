@@ -26,7 +26,6 @@ Quest quest4("Kill 10 snails", 10, 4);
 Quest quest5("Kill the boss", 1, 5);
 
 bool show_menu = false;
-bool menu_active = false;
 int mouse_x = 0, mouse_y = 0;
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
@@ -197,8 +196,8 @@ int main(int argc, char* argv[])
                     }
                     break;
                 case PLAYING:
-                    if (!menu_active) g_character.HandleInput(g_event, enemy_list, g_character, item_list);
-                    village_npc.Interact(g_character, g_event, show_menu, menu_active, player_box);
+                    if (!show_menu) g_character.HandleInput(g_event, enemy_list, g_character, item_list);
+                    village_npc.Interact(g_character, g_event, show_menu, player_box);
                     break;
                 case GAME_OVER:
                 case WINNER:

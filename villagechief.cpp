@@ -14,23 +14,22 @@ void VillageChief::SetQuests(std::vector<Quest*> quest_list)
 }
 
 // Tương tác với nhân vật
-void VillageChief::Interact(Character& player, SDL_Event& event, bool& show_menu, bool& menu_active, SDL_Rect& player_box) 
+void VillageChief::Interact(Character& player, SDL_Event& event, bool& show_menu, SDL_Rect& player_box) 
 {
     int quest_stage = player.GetQuestState();
     if (quest_stage >= quests_.size()) return;
 
     Quest* quest = quests_[quest_stage];
 
-    if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN && !menu_active && player.GetState() == 0 && (player.GetCurrentQuest() == nullptr || quest->IsCompleted())) 
+    if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN && !show_menu && player.GetState() == 0 && (player.GetCurrentQuest() == nullptr || quest->IsCompleted())) 
     {
         if (SDL_HasIntersection(&player_box, &npc_box_)) 
         {
             show_menu = true;
-            menu_active = true;
         }
     }
 
-    if (menu_active && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) 
+    if (show_menu && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) 
     {
         int mouse_x = event.button.x;
         int mouse_y = event.button.y;
@@ -41,12 +40,10 @@ void VillageChief::Interact(Character& player, SDL_Event& event, bool& show_menu
             if (get_quest_button_.IsClicked(mouse_x, mouse_y)) 
             {
                 player.SetQuest(quest);
-                menu_active = false;
                 show_menu = false;
             } 
             else if (cancel_button_.IsClicked(mouse_x, mouse_y)) 
             {
-                menu_active = false;
                 show_menu = false;
             }
         } 
@@ -57,7 +54,6 @@ void VillageChief::Interact(Character& player, SDL_Event& event, bool& show_menu
             {
                 player.QuestReward();
                 player.NextQuest();
-                menu_active = false;
                 show_menu = false;
             }
         }
